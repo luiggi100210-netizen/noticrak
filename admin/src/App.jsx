@@ -11,6 +11,7 @@ import VideosPage       from './pages/VideosPage';
 import NuevoVideoPage   from './pages/NuevoVideoPage';
 import UsuariosPage     from './pages/UsuariosPage';
 import RadioPage        from './pages/RadioPage';
+import RedesSocialesPage from './pages/RedesSocialesPage';
 
 /** Layout con sidebar para rutas protegidas */
 function AdminLayout({ children }) {
@@ -51,6 +52,7 @@ export default function App() {
       <Route path="/videos/nuevo"       element={<PrivatePage><NuevoVideoPage /></PrivatePage>} />
       <Route path="/usuarios"           element={<PrivatePage soloAdmin><UsuariosPage /></PrivatePage>} />
       <Route path="/radio"              element={<PrivatePage soloAdmin><RadioPage /></PrivatePage>} />
+      <Route path="/redes"              element={<PrivatePage soloAdmin><RedesSocialesPage /></PrivatePage>} />
 
       {/* Raíz → dashboard o login */}
       <Route path="/" element={<Navigate to={token ? '/dashboard' : '/login'} replace />} />

@@ -26,6 +26,7 @@ app.use('/api/videos',     require('./routes/videos'));
 app.use('/api/categorias', require('./routes/categorias'));
 app.use('/api/upload',     require('./routes/upload'));
 app.use('/api/radio',      require('./routes/radio'));
+app.use('/api/redes',      require('./routes/redes'));
 
 // ── Health check ──────────────────────────────────────────────────────────────
 app.get('/', (req, res) => {

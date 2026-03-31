@@ -66,6 +66,13 @@ export default function Sidebar() {
               <span className="nav-icon">📻</span>
               Radio
             </NavLink>
+            <NavLink
+              to="/redes"
+              className={({ isActive }) => `nav-link${isActive ? ' active' : ''}`}
+            >
+              <span className="nav-icon">📲</span>
+              Redes Sociales
+            </NavLink>
           </>
         )}
       </nav>

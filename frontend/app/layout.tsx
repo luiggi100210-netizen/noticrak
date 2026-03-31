@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import './globals.css';
 import { ThemeProvider } from '../components/ThemeProvider';
 import Header from '../components/Header';
+import RedesFlotantes from '../components/ui/RedesFlotantes';
 
 export const metadata: Metadata = {
   title: {
@@ -57,6 +58,7 @@ export default function RootLayout({
               </div>
             </div>
           </footer>
+        <RedesFlotantes />
         </ThemeProvider>
       </body>
     </html>
