@@ -68,6 +68,17 @@ router.get('/destacadas', async (req, res) => {
   }
 });
 
+// ── GET /api/noticias/portada ─────────────────────────────────────────────────
+router.get('/portada', async (req, res) => {
+  try {
+    const portada = await Noticia.getPortada();
+    res.json(portada);
+  } catch (err) {
+    console.error('GET /noticias/portada:', err.message);
+    res.status(500).json({ error: 'Error al obtener portada' });
+  }
+});
+
 // ── GET /api/noticias/:slug ───────────────────────────────────────────────────
 router.get('/:slug', async (req, res) => {
   try {

@@ -36,6 +36,29 @@ const Radio = {
     );
     return rows[0] || null;
   },
+
+  async getConfig() {
+    const { rows } = await pool.query(
+      `SELECT id, activo, stream_url, nombre, descripcion, updated_at
+       FROM radio_config LIMIT 1`
+    );
+    return rows[0] || null;
+  },
+
+  async updateConfig({ activo, stream_url, nombre, descripcion }) {
+    const { rows } = await pool.query(
+      `UPDATE radio_config
+       SET activo      = $1,
+           stream_url  = $2,
+           nombre      = $3,
+           descripcion = $4,
+           updated_at  = NOW()
+       WHERE id = 1
+       RETURNING id, activo, stream_url, nombre, descripcion, updated_at`,
+      [activo, stream_url || '', nombre || 'NotiCrack Radio', descripcion || 'Noticias & Talk']
+    );
+    return rows[0];
+  },
 };
 
 module.exports = Radio;

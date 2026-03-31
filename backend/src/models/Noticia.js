@@ -244,6 +244,59 @@ const Noticia = {
     return rows[0] || null;
   },
 
+  /** Una sola query que trae hasta 4 noticias de cada categoría para la portada */
+  async getPortada() {
+    const CATS = ['cusco','politica','nacional','economia','deportes','internacional','tecnologia','entretenimiento'];
+
+    const { rows } = await pool.query(
+      `SELECT * FROM (
+        SELECT
+          n.id::text, n.titulo, n.slug,
+          n.subtitulo AS resumen,
+          n.imagen_url,
+          n.estado, (n.estado = 'publicado') AS publicado,
+          n.destacada AS destacado,
+          n.tags, n.fuente, n.vistas,
+          n.fecha_publicacion, n.updated_at AS "createdAt",
+          c.slug   AS categoria,
+          c.slug   AS categoria_slug,
+          c.nombre AS categoria_nombre,
+          c.color  AS categoria_color,
+          u.nombre AS autor_nombre,
+          ROW_NUMBER() OVER (
+            PARTITION BY c.slug
+            ORDER BY n.fecha_publicacion DESC
+          ) AS rn
+        FROM noticias n
+        LEFT JOIN categorias c ON c.id = n.categoria_id
+        LEFT JOIN usuarios   u ON u.id = n.autor_id
+        WHERE n.estado = 'publicado'
+          AND c.slug = ANY($1)
+      ) ranked
+      WHERE rn <= 4
+      ORDER BY categoria, fecha_publicacion DESC`,
+      [CATS]
+    );
+
+    // Inicializar todas las categorías con []
+    const portada = Object.fromEntries(CATS.map(cat => [cat, []]));
+
+    for (const row of rows) {
+      const { rn, ...noticia } = row;
+      if (portada[noticia.categoria]) {
+        portada[noticia.categoria].push(noticia);
+      }
+    }
+
+    // Destacada: la noticia más reciente de todas las categorías
+    const masReciente = rows.slice().sort(
+      (a, b) => new Date(b.fecha_publicacion) - new Date(a.fecha_publicacion)
+    )[0];
+    const destacada = masReciente ? (({ rn, ...n }) => n)(masReciente) : null;
+
+    return { ...portada, destacada };
+  },
+
   /** Suma +1 a las vistas */
   async sumarVista(id) {
     const { rows } = await pool.query(

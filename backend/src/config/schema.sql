@@ -82,6 +82,21 @@ CREATE INDEX IF NOT EXISTS idx_videos_estado    ON videos(estado);
 CREATE INDEX IF NOT EXISTS idx_videos_categoria ON videos(categoria_id);
 
 -- ============================================================
+-- TABLA: radio_config
+-- ============================================================
+CREATE TABLE IF NOT EXISTS radio_config (
+  id          SERIAL PRIMARY KEY,
+  activo      BOOLEAN NOT NULL DEFAULT false,
+  stream_url  TEXT DEFAULT '',
+  nombre      VARCHAR(100) DEFAULT 'NotiCrack Radio',
+  descripcion VARCHAR(200) DEFAULT 'Noticias & Talk',
+  updated_at  TIMESTAMP DEFAULT NOW()
+);
+
+INSERT INTO radio_config (activo, stream_url, nombre, descripcion)
+VALUES (false, '', 'NotiCrack Radio', 'Noticias & Talk')
+ON CONFLICT DO NOTHING;
+
 -- TABLA: radio_programas
 -- ============================================================
 CREATE TABLE IF NOT EXISTS radio_programas (

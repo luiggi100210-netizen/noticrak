@@ -53,6 +53,23 @@ export const getNoticiaBySlug = async (slug: string): Promise<{
   return data;
 };
 
+export interface PortadaResponse {
+  cusco:           Noticia[];
+  politica:        Noticia[];
+  nacional:        Noticia[];
+  economia:        Noticia[];
+  deportes:        Noticia[];
+  internacional:   Noticia[];
+  tecnologia:      Noticia[];
+  entretenimiento: Noticia[];
+  destacada:       Noticia | null;
+}
+
+export const getPortada = async (): Promise<PortadaResponse> => {
+  const { data } = await api.get('/noticias/portada');
+  return data;
+};
+
 export const getTickerNoticias = async (): Promise<Noticia[]> => {
   const { data } = await api.get('/noticias/ticker');
   return data;

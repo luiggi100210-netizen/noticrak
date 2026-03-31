@@ -5,9 +5,20 @@ import { es } from 'date-fns/locale';
 import type { Noticia } from '../../lib/api';
 import CategoryBadge from '../ui/CategoryBadge';
 
+const CAT_COLORS: Record<string, string> = {
+  cusco:           '#f59e0b',
+  nacional:        '#2563eb',
+  politica:        '#dc2626',
+  economia:        '#16a34a',
+  deportes:        '#f97316',
+  tecnologia:      '#9333ea',
+  internacional:   '#0284c7',
+  entretenimiento: '#ec4899',
+};
+
 interface NoticiaCardProps {
   noticia: Noticia;
-  variant?: 'hero' | 'stack' | 'list' | 'grid';
+  variant?: 'hero' | 'featured' | 'stack' | 'list' | 'grid';
   numero?: number;
 }
 
@@ -30,7 +41,14 @@ export default function NoticiaCard({ noticia, variant = 'grid', numero }: Notic
               priority
             />
           ) : (
-            <div className="w-full h-full bg-slate-800" />
+            <div
+              className="w-full h-full flex items-start p-5"
+              style={{ backgroundColor: CAT_COLORS[noticia.categoria] ?? '#334155' }}
+            >
+              <span className="text-white/60 text-5xl font-black uppercase tracking-widest leading-none" style={{ fontFamily: 'Georgia, serif' }}>
+                {noticia.categoria}
+              </span>
+            </div>
           )}
           <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/25 to-transparent" />
           <div className="absolute bottom-0 left-0 right-0 p-5">
@@ -46,6 +64,47 @@ export default function NoticiaCard({ noticia, variant = 'grid', numero }: Notic
             )}
             <div className="flex items-center gap-3 mt-3 text-xs text-slate-400">
               {noticia.autor_nombre && <span>{noticia.autor_nombre}</span>}
+              <span>{tiempoRelativo}</span>
+            </div>
+          </div>
+        </div>
+      </Link>
+    );
+  }
+
+  if (variant === 'featured') {
+    return (
+      <Link href={`/noticias/${noticia.slug}`} className="group block">
+        <div className="relative h-52 lg:h-60 rounded-xl overflow-hidden">
+          {noticia.imagen_url ? (
+            <Image
+              src={noticia.imagen_url}
+              alt={noticia.titulo}
+              fill
+              className="object-cover transition-transform duration-500 group-hover:scale-105"
+            />
+          ) : (
+            <div
+              className="w-full h-full flex items-start p-4"
+              style={{ backgroundColor: CAT_COLORS[noticia.categoria] ?? '#334155' }}
+            >
+              <span className="text-white/50 text-4xl font-black uppercase tracking-widest leading-none" style={{ fontFamily: 'Georgia, serif' }}>
+                {noticia.categoria}
+              </span>
+            </div>
+          )}
+          <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/20 to-transparent" />
+          <div className="absolute bottom-0 left-0 right-0 p-4">
+            <CategoryBadge categoria={noticia.categoria} className="mb-1.5" />
+            <h2
+              className="text-white font-bold text-lg lg:text-xl leading-tight mb-1.5 group-hover:underline"
+              style={{ fontFamily: 'Georgia, serif' }}
+            >
+              {noticia.titulo}
+            </h2>
+            <div className="flex items-center gap-2 text-xs text-slate-300">
+              {noticia.autor_nombre && <span>{noticia.autor_nombre}</span>}
+              {noticia.autor_nombre && <span>·</span>}
               <span>{tiempoRelativo}</span>
             </div>
           </div>

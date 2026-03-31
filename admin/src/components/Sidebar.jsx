@@ -51,13 +51,22 @@ export default function Sidebar() {
         ))}
 
         {esAdmin && (
-          <NavLink
-            to="/usuarios"
-            className={({ isActive }) => `nav-link${isActive ? ' active' : ''}`}
-          >
-            <span className="nav-icon">👥</span>
-            Usuarios
-          </NavLink>
+          <>
+            <NavLink
+              to="/usuarios"
+              className={({ isActive }) => `nav-link${isActive ? ' active' : ''}`}
+            >
+              <span className="nav-icon">👥</span>
+              Usuarios
+            </NavLink>
+            <NavLink
+              to="/radio"
+              className={({ isActive }) => `nav-link${isActive ? ' active' : ''}`}
+            >
+              <span className="nav-icon">📻</span>
+              Radio
+            </NavLink>
+          </>
         )}
       </nav>
 

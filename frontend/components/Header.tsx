@@ -41,7 +41,7 @@ export default function Header() {
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     if (searchQuery.trim()) {
-      router.push(`/?buscar=${encodeURIComponent(searchQuery.trim())}`);
+      router.push(`/buscar?q=${encodeURIComponent(searchQuery.trim())}`);
       setSearchOpen(false);
       setSearchQuery('');
     }
@@ -68,21 +68,39 @@ export default function Header() {
           </button>
 
           {/* Logo */}
-          <Link href="/" className="flex items-center gap-2 flex-shrink-0">
-            <div className="bg-primary-600 text-white font-black text-xl px-3 py-1 rounded-lg tracking-tight">
-              Noti<span className="text-yellow-300">Crack</span>
-            </div>
+          <Link href="/" className="flex items-center flex-shrink-0 text-slate-900 dark:text-white">
+            <span className="font-black text-2xl leading-none" style={{ fontFamily: 'Georgia, serif' }}>Noti</span>
+            <span
+              className="mx-1 inline-flex items-center justify-center rounded-full flex-shrink-0"
+              style={{ width: 26, height: 26, backgroundColor: '#1a6fad' }}
+            >
+              <svg width="9" height="11" viewBox="0 0 9 11" fill="none">
+                <polygon points="2,1 8,5.5 2,10" fill="white" />
+              </svg>
+            </span>
+            <span className="font-black text-2xl leading-none" style={{ fontFamily: 'Georgia, serif' }}>rack</span>
           </Link>
 
           {/* Nav categorías (desktop) */}
-          <nav className="hidden lg:flex items-center gap-1 flex-1 justify-center">
-            {['cusco', 'nacional', 'politica', 'economia', 'deportes', 'tecnologia'].map(cat => (
+          <nav className="hidden lg:flex items-center gap-0.5 flex-1 justify-center overflow-x-auto">
+            {[
+              { label: 'Cusco',           href: '/seccion/cusco' },
+              { label: 'Nacional',        href: '/seccion/nacional' },
+              { label: 'Política',        href: '/seccion/politica' },
+              { label: 'Economía',        href: '/seccion/economia' },
+              { label: 'Deportes',        href: '/seccion/deportes' },
+              { label: 'Tecnología',      href: '/seccion/tecnologia' },
+              { label: 'Internacional',   href: '/seccion/internacional' },
+              { label: 'Entretenimiento', href: '/seccion/entretenimiento' },
+              { label: 'Videos',          href: '/videos' },
+              { label: 'Radio',           href: '/#radio' },
+            ].map(item => (
               <Link
-                key={cat}
-                href={`/seccion/${cat}`}
-                className="px-3 py-1.5 text-sm font-medium rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 capitalize transition-colors"
+                key={item.href}
+                href={item.href}
+                className="px-2.5 py-1.5 text-sm font-medium rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 whitespace-nowrap transition-colors"
               >
-                {cat === 'politica' ? 'Política' : cat === 'economia' ? 'Economía' : cat === 'tecnologia' ? 'Tecnología' : cat.charAt(0).toUpperCase() + cat.slice(1)}
+                {item.label}
               </Link>
             ))}
           </nav>
