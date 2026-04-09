@@ -145,24 +145,29 @@ const Noticia = {
 
   /** Crea una noticia nueva */
   async create({ titulo, subtitulo, cuerpo, categoria_id, autor_id, imagen_url, estado, destacada, tags, fuente }) {
-    let slug = crearSlug(titulo);
-
-    // Garantiza unicidad del slug
-    const { rows: existe } = await pool.query('SELECT id FROM noticias WHERE slug = $1', [slug]);
-    if (existe.length) {
-      slug = `${slug}-${Date.now()}`;
-    }
-
+    const baseSlug   = crearSlug(titulo);
     const estadoFinal = estado || 'borrador';
-    const { rows } = await pool.query(
-      `INSERT INTO noticias
+    const valores    = (slug) => [
+      titulo, slug, subtitulo || null, cuerpo, categoria_id || null, autor_id || null,
+      imagen_url || null, estadoFinal, destacada || false, tags || [], fuente || null,
+    ];
+    const sql = `INSERT INTO noticias
          (titulo, slug, subtitulo, cuerpo, categoria_id, autor_id, imagen_url, estado, destacada, tags, fuente, fecha_publicacion)
        VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11, NOW())
-       RETURNING *`,
-      [titulo, slug, subtitulo || null, cuerpo, categoria_id || null, autor_id || null,
-       imagen_url || null, estadoFinal, destacada || false, tags || [], fuente || null]
-    );
-    return rows[0];
+       RETURNING *`;
+
+    try {
+      const { rows } = await pool.query(sql, valores(baseSlug));
+      return rows[0];
+    } catch (err) {
+      // Colision de slug por insercion concurrente — reintenta con sufijo de tiempo
+      if (err.code === '23505') {
+        const slugUnico = `${baseSlug}-${Date.now()}`;
+        const { rows } = await pool.query(sql, valores(slugUnico));
+        return rows[0];
+      }
+      throw err;
+    }
   },
 
   /** Actualiza una noticia existente */
@@ -230,6 +235,7 @@ const Noticia = {
          n.tags, n.fuente, n.vistas,
          n.fecha_publicacion, n.updated_at AS "createdAt",
          n.categoria_id,
+         n.autor_id,
          c.slug    AS categoria,
          c.slug    AS categoria_slug,
          c.nombre  AS categoria_nombre,

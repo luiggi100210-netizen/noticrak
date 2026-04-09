@@ -1,6 +1,6 @@
 const express = require('express');
 const Radio = require('../models/Radio');
-const { verificarToken } = require('../middleware/auth');
+const { verificarToken, soloAdmin } = require('../middleware/auth');
 
 const router = express.Router();
 
@@ -32,7 +32,7 @@ router.get('/ahora', async (req, res) => {
 });
 
 // ── GET /api/radio/estado (admin) ─────────────────────────────────────────────
-router.get('/estado', verificarToken, async (req, res) => {
+router.get('/estado', soloAdmin, async (req, res) => {
   try {
     const config = await Radio.getConfig();
     res.json({ ok: true, data: config });
@@ -43,7 +43,7 @@ router.get('/estado', verificarToken, async (req, res) => {
 });
 
 // ── PUT /api/radio/estado (admin) ─────────────────────────────────────────────
-router.put('/estado', verificarToken, async (req, res) => {
+router.put('/estado', soloAdmin, async (req, res) => {
   try {
     const { activo, stream_url, nombre, descripcion } = req.body;
     if (typeof activo !== 'boolean') {

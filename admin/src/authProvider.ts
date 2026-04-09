@@ -9,8 +9,8 @@ const authProvider = {
         email: username,
         password,
       });
-      localStorage.setItem('auth_token', data.token);
-      localStorage.setItem('auth_user', JSON.stringify(data.usuario));
+      localStorage.setItem('token', data.token);
+      localStorage.setItem('usuario', JSON.stringify(data.usuario));
       return Promise.resolve();
     } catch (error: any) {
       return Promise.reject(
@@ -20,21 +20,21 @@ const authProvider = {
   },
 
   logout: () => {
-    localStorage.removeItem('auth_token');
-    localStorage.removeItem('auth_user');
+    localStorage.removeItem('token');
+    localStorage.removeItem('usuario');
     return Promise.resolve();
   },
 
   checkAuth: () => {
-    const token = localStorage.getItem('auth_token');
+    const token = localStorage.getItem('token');
     return token ? Promise.resolve() : Promise.reject();
   },
 
   checkError: (error: any) => {
     const status = error?.status || error?.response?.status;
     if (status === 401 || status === 403) {
-      localStorage.removeItem('auth_token');
-      localStorage.removeItem('auth_user');
+      localStorage.removeItem('token');
+      localStorage.removeItem('usuario');
       return Promise.reject();
     }
     return Promise.resolve();
@@ -42,7 +42,7 @@ const authProvider = {
 
   getIdentity: () => {
     try {
-      const user = JSON.parse(localStorage.getItem('auth_user') || '{}');
+      const user = JSON.parse(localStorage.getItem('usuario') || '{}');
       return Promise.resolve({
         id: user.id,
         fullName: user.nombre,
@@ -55,7 +55,7 @@ const authProvider = {
 
   getPermissions: () => {
     try {
-      const user = JSON.parse(localStorage.getItem('auth_user') || '{}');
+      const user = JSON.parse(localStorage.getItem('usuario') || '{}');
       return Promise.resolve(user.rol || 'periodista');
     } catch {
       return Promise.resolve('periodista');

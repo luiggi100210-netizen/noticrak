@@ -5,9 +5,19 @@ const path = require('path');
 require('dotenv').config({ path: path.join(__dirname, '../../.env') });
 
 // ── Usuarios iniciales ────────────────────────────────────────────────────────
+// Las contraseñas se leen desde variables de entorno.
+// Define SEED_ADMIN_PASSWORD y SEED_PERIODISTA_PASSWORD en .env antes de correr.
+const SEED_ADMIN_PASSWORD     = process.env.SEED_ADMIN_PASSWORD;
+const SEED_PERIODISTA_PASSWORD = process.env.SEED_PERIODISTA_PASSWORD;
+
+if (!SEED_ADMIN_PASSWORD || !SEED_PERIODISTA_PASSWORD) {
+  console.error('❌ SEED_ADMIN_PASSWORD y SEED_PERIODISTA_PASSWORD deben estar definidas en .env');
+  process.exit(1);
+}
+
 const USUARIOS_SEED = [
-  { nombre: 'Admin NotiCrack', email: 'admin@noticrack.pe', password: 'Admin2024!', rol: 'admin' },
-  { nombre: 'Marco Quispe',    email: 'marco@noticrack.pe', password: 'Marco2024!', rol: 'periodista' },
+  { nombre: 'Admin NotiCrack', email: 'admin@noticrack.pe', password: SEED_ADMIN_PASSWORD,     rol: 'admin' },
+  { nombre: 'Marco Quispe',    email: 'marco@noticrack.pe', password: SEED_PERIODISTA_PASSWORD, rol: 'periodista' },
 ];
 
 async function initDB() {
@@ -45,13 +55,13 @@ async function initDB() {
     console.log('✅ Datos iniciales insertados');
     console.log('🎉 Base de datos NotiCrack lista');
     console.log('');
-    console.log('  Credenciales de acceso:');
+    console.log('  Usuarios creados:');
     console.log('  ─────────────────────────────────────────');
     for (const u of USUARIOS_SEED) {
-      console.log(`  ${u.rol.padEnd(12)} ${u.email}  /  ${u.password}`);
+      console.log(`  ${u.rol.padEnd(12)} ${u.email}`);
     }
     console.log('  ─────────────────────────────────────────');
-    console.log('  ⚠ Cambia estas contraseñas en producción');
+    console.log('  ⚠ Usa las contraseñas definidas en tus variables de entorno');
 
   } catch (err) {
     console.error('❌ Error:', err.message);

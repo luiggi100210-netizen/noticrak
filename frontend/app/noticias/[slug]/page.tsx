@@ -3,12 +3,32 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
+import sanitizeHtml from 'sanitize-html';
 import { getNoticiaBySlug, getCategoriaColor, getCategoriaLabel, getNoticias } from '../../../lib/api';
 import NoticiaCard from '../../../components/noticias/NoticiaCard';
 import CategoryBadge from '../../../components/ui/CategoryBadge';
 import VistaCounter from '../../../components/noticias/VistaCounter';
 import Divider from '../../../components/ui/Divider';
 import type { Metadata } from 'next';
+
+const SANITIZE_OPTIONS: sanitizeHtml.IOptions = {
+  allowedTags: [
+    'p', 'br', 'strong', 'em', 'u', 's', 'b', 'i',
+    'h2', 'h3', 'h4', 'blockquote', 'ul', 'ol', 'li',
+    'a', 'img', 'figure', 'figcaption',
+  ],
+  allowedAttributes: {
+    a: ['href', 'title', 'target', 'rel'],
+    img: ['src', 'alt', 'width', 'height'],
+  },
+  allowedSchemes: ['https', 'http'],
+  transformTags: {
+    a: (tagName, attribs) => ({
+      tagName,
+      attribs: { ...attribs, rel: 'noopener noreferrer' },
+    }),
+  },
+};
 
 interface PageProps {
   params: { slug: string };
@@ -157,7 +177,7 @@ export default async function NoticiaPage({ params }: PageProps) {
               prose-a:text-blue-600 prose-a:no-underline hover:prose-a:underline
               prose-img:rounded-xl prose-blockquote:border-l-blue-500"
             style={{ fontFamily: 'Georgia, serif' }}
-            dangerouslySetInnerHTML={{ __html: noticia.contenido || '' }}
+            dangerouslySetInnerHTML={{ __html: sanitizeHtml(noticia.contenido || '', SANITIZE_OPTIONS) }}
           />
 
           {/* Tags */}

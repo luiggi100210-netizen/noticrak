@@ -1,6 +1,6 @@
 const express = require('express');
 const Noticia = require('../models/Noticia');
-const { verificarToken } = require('../middleware/auth');
+const { verificarToken, soloAdmin } = require('../middleware/auth');
 
 const router = express.Router();
 
@@ -25,7 +25,7 @@ router.get('/', async (req, res) => {
 });
 
 // ── GET /api/noticias/admin/todas  (admin: todas sin filtro de estado) ─────────
-router.get('/admin/todas', verificarToken, async (req, res) => {
+router.get('/admin/todas', soloAdmin, async (req, res) => {
   try {
     const { categoria, estado, limite, pagina, buscar } = req.query;
     const resultado = await Noticia.getAll({
@@ -43,7 +43,7 @@ router.get('/admin/todas', verificarToken, async (req, res) => {
 });
 
 // ── GET /api/noticias/admin/:id  (admin: noticia por ID numérico) ──────────────
-router.get('/admin/:id', verificarToken, async (req, res) => {
+router.get('/admin/:id', soloAdmin, async (req, res) => {
   const id = parseInt(req.params.id);
   if (isNaN(id)) return res.status(400).json({ error: 'ID inválido' });
   try {
@@ -120,8 +120,16 @@ router.put('/:id', verificarToken, async (req, res) => {
   if (isNaN(id)) return res.status(400).json({ error: 'ID inválido' });
 
   try {
+    const existente = await Noticia.getById(id);
+    if (!existente) return res.status(404).json({ error: 'Noticia no encontrada' });
+
+    const esAdmin = req.usuario.rol === 'admin';
+    const esAutor = existente.autor_id === req.usuario.id;
+    if (!esAdmin && !esAutor) {
+      return res.status(403).json({ error: 'No tienes permiso para editar esta noticia' });
+    }
+
     const noticia = await Noticia.update(id, req.body);
-    if (!noticia) return res.status(404).json({ error: 'Noticia no encontrada' });
     res.json(noticia);
   } catch (err) {
     console.error('PUT /noticias/:id:', err.message);
@@ -135,8 +143,16 @@ router.delete('/:id', verificarToken, async (req, res) => {
   if (isNaN(id)) return res.status(400).json({ error: 'ID inválido' });
 
   try {
+    const existente = await Noticia.getById(id);
+    if (!existente) return res.status(404).json({ error: 'Noticia no encontrada' });
+
+    const esAdmin = req.usuario.rol === 'admin';
+    const esAutor = existente.autor_id === req.usuario.id;
+    if (!esAdmin && !esAutor) {
+      return res.status(403).json({ error: 'No tienes permiso para eliminar esta noticia' });
+    }
+
     const eliminada = await Noticia.delete(id);
-    if (!eliminada) return res.status(404).json({ error: 'Noticia no encontrada' });
     res.json({ mensaje: 'Noticia eliminada', id: eliminada.id });
   } catch (err) {
     console.error('DELETE /noticias/:id:', err.message);

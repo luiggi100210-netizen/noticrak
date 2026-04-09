@@ -1,8 +1,28 @@
 require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
+const rateLimit = require('express-rate-limit');
 
 const app = express();
+
+// ── Rate limiting ─────────────────────────────────────────────────────────────
+const globalLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutos
+  max: 300,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { error: 'Demasiadas solicitudes, intenta más tarde.' },
+});
+
+const loginLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutos
+  max: 10,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { error: 'Demasiados intentos de inicio de sesión, intenta en 15 minutos.' },
+});
+
+app.use(globalLimiter);
 
 // ── Middlewares globales ──────────────────────────────────────────────────────
 const allowedOrigins = [
@@ -20,6 +40,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 // ── Rutas ─────────────────────────────────────────────────────────────────────
+app.use('/api/auth/login', loginLimiter);
 app.use('/api/auth',       require('./routes/auth'));
 app.use('/api/noticias',   require('./routes/noticias'));
 app.use('/api/videos',     require('./routes/videos'));

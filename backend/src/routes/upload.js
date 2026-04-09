@@ -27,6 +27,21 @@ const upload = multer({
 });
 
 /**
+ * Verifica los magic bytes del buffer para confirmar que es una imagen real.
+ * El Content-Type del cliente no es confiable; los bytes iniciales si.
+ */
+function getMimeFromBuffer(buf) {
+  if (buf[0] === 0xFF && buf[1] === 0xD8 && buf[2] === 0xFF) return 'image/jpeg';
+  if (buf[0] === 0x89 && buf[1] === 0x50 && buf[2] === 0x4E && buf[3] === 0x47) return 'image/png';
+  if (buf[0] === 0x47 && buf[1] === 0x49 && buf[2] === 0x46) return 'image/gif';
+  if (buf[0] === 0x52 && buf[1] === 0x49 && buf[2] === 0x46 && buf[3] === 0x46 &&
+      buf[8] === 0x57 && buf[9] === 0x45 && buf[10] === 0x42 && buf[11] === 0x50) return 'image/webp';
+  return null;
+}
+
+const MIME_PERMITIDOS = new Set(['image/jpeg', 'image/png', 'image/gif', 'image/webp']);
+
+/**
  * Sube un buffer a Cloudinary usando upload_stream.
  * Retorna la respuesta de Cloudinary (secure_url, public_id, etc.)
  */
@@ -49,6 +64,11 @@ router.post('/imagen', verificarToken, upload.single('imagen'), async (req, res)
     return res.status(400).json({ error: 'No se recibió ninguna imagen' });
   }
 
+  const mimeReal = getMimeFromBuffer(req.file.buffer);
+  if (!mimeReal || !MIME_PERMITIDOS.has(mimeReal)) {
+    return res.status(400).json({ error: 'El archivo no es una imagen válida (JPG, PNG, WebP o GIF)' });
+  }
+
   try {
     const resultado = await subirCloudinary(req.file.buffer, 'noticrack/noticias');
     res.json({
@@ -68,6 +88,11 @@ router.post('/imagen', verificarToken, upload.single('imagen'), async (req, res)
 router.post('/avatar', verificarToken, upload.single('imagen'), async (req, res) => {
   if (!req.file) {
     return res.status(400).json({ error: 'No se recibió ninguna imagen' });
+  }
+
+  const mimeReal = getMimeFromBuffer(req.file.buffer);
+  if (!mimeReal || !MIME_PERMITIDOS.has(mimeReal)) {
+    return res.status(400).json({ error: 'El archivo no es una imagen válida (JPG, PNG, WebP o GIF)' });
   }
 
   try {

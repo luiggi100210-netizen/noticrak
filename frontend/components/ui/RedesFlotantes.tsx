@@ -1,8 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000/api';
+import api from '../../lib/api';
 
 interface RedSocial {
   red: string;
@@ -56,9 +55,8 @@ export default function RedesFlotantes() {
   const [redes, setRedes] = useState<RedSocial[]>([]);
 
   useEffect(() => {
-    fetch(`${API_URL}/redes`)
-      .then(r => r.json())
-      .then(d => { if (d.ok && d.data.length > 0) setRedes(d.data); })
+    api.get('/redes')
+      .then(({ data }) => { if (data.ok && data.data.length > 0) setRedes(data.data); })
       .catch(() => {});
   }, []);
 

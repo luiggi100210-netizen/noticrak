@@ -1,8 +1,7 @@
 'use client';
 
 import { useEffect } from 'react';
-
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000/api';
+import api from '../../lib/api';
 
 interface VistaCounterProps {
   noticiaId: string;
@@ -10,7 +9,7 @@ interface VistaCounterProps {
 
 export default function VistaCounter({ noticiaId }: VistaCounterProps) {
   useEffect(() => {
-    fetch(`${API_URL}/noticias/${noticiaId}/vistas`, { method: 'PUT' }).catch(() => {});
+    api.put(`/noticias/${noticiaId}/vistas`).catch(() => {});
   }, [noticiaId]);
 
   return null;

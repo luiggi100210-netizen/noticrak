@@ -1,4 +1,4 @@
-import { getPortada } from '../lib/api';
+import { getPortada, API_URL } from '../lib/api';
 import RadioPlayer from '../components/radio/RadioPlayer';
 import NoticiaHero from '../components/noticias/NoticiaHero';
 import SeccionNoticias from '../components/noticias/SeccionNoticias';
@@ -6,8 +6,6 @@ import GrillaCategoria from '../components/noticias/GrillaCategoria';
 import ClimaWidget from '../components/widgets/ClimaWidget';
 import CambioWidget from '../components/widgets/CambioWidget';
 import TendenciasWidget from '../components/widgets/TendenciasWidget';
-
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000/api';
 
 const PORTADA_VACIA = {
   cusco: [], politica: [], nacional: [], economia: [],

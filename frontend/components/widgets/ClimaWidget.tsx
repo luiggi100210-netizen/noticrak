@@ -3,7 +3,7 @@ export default function ClimaWidget() {
     <div className="bg-gradient-to-br from-blue-500 to-blue-700 rounded-xl p-4 text-white">
       <div className="flex items-center justify-between mb-3">
         <h3 className="text-xs font-bold uppercase tracking-widest opacity-80">Clima</h3>
-        <span className="text-xs opacity-70">Cusco, Perú</span>
+        <span className="text-xs opacity-70">Referencial · Cusco</span>
       </div>
 
       <div className="flex items-center gap-3 mb-3">
