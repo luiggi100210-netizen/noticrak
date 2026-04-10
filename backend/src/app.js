@@ -30,6 +30,7 @@ const allowedOrigins = [
   'http://localhost:3001',
   process.env.FRONTEND_URL,
   process.env.ADMIN_URL,
+  'https://clever-lokum-6008e2.netlify.app',
 ].filter(Boolean);
 
 app.use(cors({
