@@ -1,14 +1,16 @@
+export const dynamic = 'force-static';
+
 import { getNoticias } from '../../lib/api';
 import NoticiaCard from '../../components/noticias/NoticiaCard';
 import Link from 'next/link';
 import type { Metadata } from 'next';
 
 interface PageProps {
-  searchParams: { q?: string };
+  searchParams: Promise<{ q?: string }>;
 }
 
 export async function generateMetadata({ searchParams }: PageProps): Promise<Metadata> {
-  const q = searchParams.q || '';
+  const { q = '' } = await searchParams;
   return {
     title: q ? `Búsqueda: "${q}" - NotiCrack` : 'Buscar - NotiCrack',
     description: q ? `Resultados de búsqueda para "${q}" en NotiCrack` : 'Buscar noticias en NotiCrack',
@@ -16,7 +18,8 @@ export async function generateMetadata({ searchParams }: PageProps): Promise<Met
 }
 
 export default async function BuscarPage({ searchParams }: PageProps) {
-  const q = (searchParams.q || '').trim();
+  const { q: qRaw = '' } = await searchParams;
+  const q = qRaw.trim();
 
   const resultado = q
     ? await getNoticias({ buscar: q, limite: 30 }).catch(() => ({

@@ -1,3 +1,5 @@
+export const dynamic = 'force-static';
+
 import { notFound } from 'next/navigation';
 import { getNoticias, CATEGORIAS, getCategoriaLabel, getCategoriaColor } from '../../../lib/api';
 import NoticiaCard from '../../../components/noticias/NoticiaCard';
@@ -6,13 +8,18 @@ import CargarMas from '../../../components/noticias/CargarMas';
 import Link from 'next/link';
 import type { Metadata } from 'next';
 
+export function generateStaticParams() {
+  return CATEGORIAS.map((c) => ({ categoria: c.key }));
+}
+
 interface PageProps {
-  params: { categoria: string };
-  searchParams: { pagina?: string };
+  params: Promise<{ categoria: string }>;
+  searchParams: Promise<{ pagina?: string }>;
 }
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
-  const label = getCategoriaLabel(params.categoria);
+  const { categoria } = await params;
+  const label = getCategoriaLabel(categoria);
   return {
     title: `${label} — NotiCrack`,
     description: `Últimas noticias de ${label} en NotiCrack`,
@@ -24,22 +31,25 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 }
 
 export default async function SeccionPage({ params, searchParams }: PageProps) {
+  const { categoria } = await params;
+  const { pagina: paginaStr = '1' } = await searchParams;
+
   const categoriaKeys = CATEGORIAS.map((c) => c.key);
-  if (!categoriaKeys.includes(params.categoria)) {
+  if (!categoriaKeys.includes(categoria)) {
     notFound();
   }
 
-  const pagina = parseInt(searchParams.pagina || '1');
+  const pagina = parseInt(paginaStr);
   const LIMITE = 20;
 
   const result = await getNoticias({
-    categoria: params.categoria,
+    categoria,
     pagina,
     limite: LIMITE,
   }).catch(() => ({ noticias: [], total: 0, pagina: 1, totalPaginas: 1 }));
 
-  const label = getCategoriaLabel(params.categoria);
-  const color = getCategoriaColor(params.categoria);
+  const label = getCategoriaLabel(categoria);
+  const color = getCategoriaColor(categoria);
 
   return (
     <div className="max-w-7xl mx-auto px-4 py-8">
@@ -69,7 +79,7 @@ export default async function SeccionPage({ params, searchParams }: PageProps) {
 
       {/* Otras categorías */}
       <div className="flex gap-2 flex-wrap mb-8">
-        {CATEGORIAS.filter((c) => c.key !== params.categoria).map((cat) => (
+        {CATEGORIAS.filter((c) => c.key !== categoria).map((cat) => (
           <Link
             key={cat.key}
             href={`/seccion/${cat.key}`}
@@ -114,7 +124,7 @@ export default async function SeccionPage({ params, searchParams }: PageProps) {
               {/* Botón cargar más */}
               {pagina < result.totalPaginas && (
                 <CargarMas
-                  categoria={params.categoria}
+                  categoria={categoria}
                   paginaActual={pagina}
                   totalPaginas={result.totalPaginas}
                 />
@@ -124,7 +134,7 @@ export default async function SeccionPage({ params, searchParams }: PageProps) {
               <div className="flex items-center gap-2 flex-wrap justify-center">
                 {pagina > 1 && (
                   <Link
-                    href={`/seccion/${params.categoria}?pagina=${pagina - 1}`}
+                    href={`/seccion/${categoria}?pagina=${pagina - 1}`}
                     className="px-4 py-2 rounded-lg bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-600 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors text-sm"
                   >
                     ← Anterior
@@ -135,7 +145,7 @@ export default async function SeccionPage({ params, searchParams }: PageProps) {
                 </span>
                 {pagina < result.totalPaginas && (
                   <Link
-                    href={`/seccion/${params.categoria}?pagina=${pagina + 1}`}
+                    href={`/seccion/${categoria}?pagina=${pagina + 1}`}
                     className="px-4 py-2 rounded-lg bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-600 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors text-sm"
                   >
                     Siguiente →

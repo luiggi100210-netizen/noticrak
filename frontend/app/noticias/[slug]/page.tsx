@@ -30,13 +30,23 @@ const SANITIZE_OPTIONS: sanitizeHtml.IOptions = {
   },
 };
 
+export async function generateStaticParams() {
+  try {
+    const res = await getNoticias({ limite: 500 });
+    return res.noticias.map((n) => ({ slug: n.slug }));
+  } catch {
+    return [];
+  }
+}
+
 interface PageProps {
-  params: { slug: string };
+  params: Promise<{ slug: string }>;
 }
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   try {
-    const { noticia } = await getNoticiaBySlug(params.slug);
+    const { slug } = await params;
+    const { noticia } = await getNoticiaBySlug(slug);
     return {
       title: noticia.titulo,
       description: noticia.resumen || noticia.titulo,
@@ -53,9 +63,10 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 }
 
 export default async function NoticiaPage({ params }: PageProps) {
+  const { slug } = await params;
   let data;
   try {
-    data = await getNoticiaBySlug(params.slug);
+    data = await getNoticiaBySlug(slug);
   } catch {
     notFound();
   }
