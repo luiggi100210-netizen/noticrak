@@ -7,7 +7,8 @@ const { verificarToken } = require('../middleware/auth');
 const router = express.Router();
 
 // URL del script PHP en cPanel
-const CPANEL_UPLOAD_URL = process.env.CPANEL_UPLOAD_URL || 'https://www.noticrack.com/upload.php';
+// Usar IP directa porque www.noticrack.com apunta a Vercel (no al cPanel)
+const CPANEL_UPLOAD_URL = process.env.CPANEL_UPLOAD_URL || 'http://198.58.106.39/~noticrac/upload.php';
 const CPANEL_UPLOAD_TOKEN = process.env.CPANEL_UPLOAD_TOKEN || 'noticrack_upload_2024_secret';
 
 // Multer: almacena en memoria

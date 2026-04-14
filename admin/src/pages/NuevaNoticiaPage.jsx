@@ -51,8 +51,8 @@ export default function NuevaNoticiaPage({ noticiaInicial, modoEdicion = false, 
       });
       setForm(f => ({ ...f, imagen_url: data.url }));
       setPreview(data.url);
-    } catch {
-      setError('Error al subir la imagen. Verifica tus credenciales de Cloudinary.');
+    } catch (err) {
+      setError(err.response?.data?.error || 'Error al subir la imagen. Intenta de nuevo.');
     } finally {
       setSubiendo(false);
     }
