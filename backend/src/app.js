@@ -42,6 +42,17 @@ app.use(cors({
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+// ── Sin caché en todas las respuestas API ─────────────────────────────────────
+app.use((req, res, next) => {
+  res.set({
+    'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate',
+    'Pragma':        'no-cache',
+    'Expires':       '0',
+    'Surrogate-Control': 'no-store',
+  });
+  next();
+});
+
 // ── Rutas ─────────────────────────────────────────────────────────────────────
 app.use('/api/auth/login', loginLimiter);
 app.use('/api/auth',       require('./routes/auth'));
