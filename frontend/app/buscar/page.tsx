@@ -1,4 +1,4 @@
-export const dynamic = 'force-static';
+export const dynamic = 'force-dynamic';
 
 import { getNoticias } from '../../lib/api';
 import NoticiaCard from '../../components/noticias/NoticiaCard';
