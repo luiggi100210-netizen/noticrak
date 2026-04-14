@@ -27,8 +27,6 @@ export default async function HomePage() {
 
   return (
     <main>
-
-      {/* ── HERO ──────────────────────────────────────── */}
       <div className="max-w-7xl mx-auto px-4 pt-6">
         {portada.destacada ? (
           <NoticiaHero
@@ -46,20 +44,14 @@ export default async function HomePage() {
         )}
       </div>
 
-      {/* ── RADIO (si el admin la activó) ─────────────── */}
       {radioData && (
         <div className="max-w-7xl mx-auto px-4 mt-6">
           <RadioPlayer config={radioData} />
         </div>
       )}
 
-      {/* ── CUSCO + SIDEBAR ───────────────────────────── */}
-      {/* Cusco ocupa 2/3, el sidebar 1/3 — sticky */}
       <div className="page-grid">
-        <SeccionNoticias
-          titulo="Cusco y Regiones"
-          noticias={portada.cusco}
-        />
+        <SeccionNoticias titulo="Cusco y Regiones" noticias={portada.cusco} />
         <aside className="sidebar">
           <ClimaWidget />
           <CambioWidget />
@@ -67,7 +59,6 @@ export default async function HomePage() {
         </aside>
       </div>
 
-      {/* ── POLÍTICA + NACIONAL (2 columnas) ──────────── */}
       <div className="seccion-bloque">
         <div className="grid-2col">
           <SeccionNoticias titulo="Política"  noticias={portada.politica} />
@@ -75,7 +66,6 @@ export default async function HomePage() {
         </div>
       </div>
 
-      {/* ── ECONOMÍA · DEPORTES · INTERNACIONAL (3 col) ── */}
       <div className="seccion-bloque">
         <div className="grid-3col">
           <GrillaCategoria titulo="Economía"       noticias={portada.economia.slice(0, 3)} />
@@ -84,14 +74,12 @@ export default async function HomePage() {
         </div>
       </div>
 
-      {/* ── TECNOLOGÍA + ENTRETENIMIENTO (2 columnas) ─── */}
       <div className="seccion-bloque">
         <div className="grid-2col">
           <GrillaCategoria titulo="Tecnología"      noticias={portada.tecnologia.slice(0, 3)} />
           <GrillaCategoria titulo="Entretenimiento" noticias={portada.entretenimiento.slice(0, 3)} />
         </div>
       </div>
-
     </main>
   );
 }

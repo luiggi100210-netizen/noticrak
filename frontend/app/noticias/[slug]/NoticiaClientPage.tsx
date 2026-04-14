@@ -1,17 +1,17 @@
-export const dynamic = 'force-dynamic';
+'use client';
 
-import { notFound } from 'next/navigation';
+import { useState, useEffect } from 'react';
+import { useParams } from 'next/navigation';
 import Image from 'next/image';
 import Link from 'next/link';
 import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
 import sanitizeHtml from 'sanitize-html';
-import { getNoticiaBySlug, getCategoriaColor, getCategoriaLabel, getNoticias } from '../../../lib/api';
+import { getNoticiaBySlug, getCategoriaColor, getCategoriaLabel, getNoticias, type Noticia } from '../../../lib/api';
 import NoticiaCard from '../../../components/noticias/NoticiaCard';
 import CategoryBadge from '../../../components/ui/CategoryBadge';
 import VistaCounter from '../../../components/noticias/VistaCounter';
 import Divider from '../../../components/ui/Divider';
-import type { Metadata } from 'next';
 
 const SANITIZE_OPTIONS: sanitizeHtml.IOptions = {
   allowedTags: [
@@ -32,54 +32,69 @@ const SANITIZE_OPTIONS: sanitizeHtml.IOptions = {
   },
 };
 
-interface PageProps {
-  params: Promise<{ slug: string }>;
-}
-
-export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
-  try {
-    const { slug } = await params;
-    const { noticia } = await getNoticiaBySlug(slug);
-    return {
-      title: noticia.titulo,
-      description: noticia.resumen || noticia.titulo,
-      openGraph: {
-        title: noticia.titulo,
-        description: noticia.resumen,
-        images: noticia.imagen_url ? [{ url: noticia.imagen_url, alt: noticia.titulo }] : [],
-        type: 'article',
-      },
-    };
-  } catch {
-    return { title: 'Noticia no encontrada' };
-  }
-}
-
 const getEmbedUrl = (url: string) => {
   const ytMatch = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([^&\s]+)/);
   if (ytMatch) return `https://www.youtube.com/embed/${ytMatch[1]}`;
   return url;
 };
 
-export default async function NoticiaPage({ params }: PageProps) {
-  const { slug } = await params;
-  let data;
-  try {
-    data = await getNoticiaBySlug(slug);
-  } catch {
-    notFound();
+export default function NoticiaClientPage() {
+  const params = useParams();
+  const slug = Array.isArray(params.slug) ? params.slug[0] : params.slug;
+
+  const [noticia, setNoticia] = useState<Noticia | null>(null);
+  const [relacionadas, setRelacionadas] = useState<Noticia[]>([]);
+  const [otrasDeCategoria, setOtrasDeCategoria] = useState<Noticia[]>([]);
+  const [cargando, setCargando] = useState(true);
+  const [noEncontrada, setNoEncontrada] = useState(false);
+
+  useEffect(() => {
+    if (!slug) return;
+    const cargar = async () => {
+      setCargando(true);
+      setNoEncontrada(false);
+      try {
+        const data = await getNoticiaBySlug(slug);
+        setNoticia(data.noticia);
+        setRelacionadas(data.relacionadas);
+
+        const masRes = await getNoticias({ categoria: data.noticia.categoria, limite: 4 })
+          .catch(() => ({ noticias: [] as Noticia[] }));
+        setOtrasDeCategoria(masRes.noticias.filter(n => n.slug !== slug).slice(0, 3));
+      } catch {
+        setNoEncontrada(true);
+      } finally {
+        setCargando(false);
+      }
+    };
+    cargar();
+  }, [slug]);
+
+  if (cargando) {
+    return (
+      <div className="max-w-7xl mx-auto px-4 py-8 animate-pulse">
+        <div className="h-4 bg-slate-200 dark:bg-slate-700 rounded w-48 mb-6" />
+        <div className="h-8 bg-slate-200 dark:bg-slate-700 rounded w-3/4 mb-4" />
+        <div className="h-6 bg-slate-200 dark:bg-slate-700 rounded w-1/2 mb-8" />
+        <div className="h-[420px] bg-slate-200 dark:bg-slate-700 rounded-xl mb-8" />
+        <div className="space-y-4">
+          {[...Array(6)].map((_, i) => (
+            <div key={i} className="h-4 bg-slate-200 dark:bg-slate-700 rounded" />
+          ))}
+        </div>
+      </div>
+    );
   }
 
-  const { noticia, relacionadas } = data;
-
-  const masDeCategoria = await getNoticias({
-    categoria: noticia.categoria,
-    limite: 4,
-  }).catch(() => ({ noticias: [] }));
-
-  const otrasDeCategoria = masDeCategoria.noticias
-    .filter(n => n.slug !== noticia.slug)
-    .slice(0, 3);
+  if (noEncontrada || !noticia) {
+    return (
+      <div className="max-w-7xl mx-auto px-4 py-16 text-center">
+        <h1 className="text-3xl font-bold mb-4">Noticia no encontrada</h1>
+        <p className="text-slate-400 mb-8">La noticia que buscas no existe o fue eliminada.</p>
+        <Link href="/" className="btn-primary">Volver al inicio</Link>
+      </div>
+    );
+  }
 
   return (
     <div className="max-w-7xl mx-auto px-4 py-8">
