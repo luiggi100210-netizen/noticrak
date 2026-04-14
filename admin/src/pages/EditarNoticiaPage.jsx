@@ -18,6 +18,7 @@ export default function EditarNoticiaPage() {
           ...data,
           tags: Array.isArray(data.tags) ? data.tags.join(', ') : (data.tags || ''),
           categoria_id: data.categoria_id || '',
+          imagenes: Array.isArray(data.imagenes) ? data.imagenes : [],
         });
       })
       .catch(() => setError('No se pudo cargar la noticia'))

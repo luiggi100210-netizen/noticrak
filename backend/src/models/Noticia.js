@@ -107,6 +107,7 @@ const Noticia = {
          n.subtitulo AS resumen,
          n.cuerpo    AS contenido,
          n.imagen_url,
+         n.imagenes,
          n.estado, (n.estado = 'publicado') AS publicado,
          n.destacada AS destacado,
          n.tags, n.fuente, n.vistas,
@@ -144,16 +145,16 @@ const Noticia = {
   },
 
   /** Crea una noticia nueva */
-  async create({ titulo, subtitulo, cuerpo, categoria_id, autor_id, imagen_url, estado, destacada, tags, fuente }) {
+  async create({ titulo, subtitulo, cuerpo, categoria_id, autor_id, imagen_url, estado, destacada, tags, fuente, imagenes = [] }) {
     const baseSlug   = crearSlug(titulo);
     const estadoFinal = estado || 'borrador';
     const valores    = (slug) => [
       titulo, slug, subtitulo || null, cuerpo, categoria_id || null, autor_id || null,
-      imagen_url || null, estadoFinal, destacada || false, tags || [], fuente || null,
+      imagen_url || null, estadoFinal, destacada || false, tags || [], fuente || null, imagenes || [],
     ];
     const sql = `INSERT INTO noticias
-         (titulo, slug, subtitulo, cuerpo, categoria_id, autor_id, imagen_url, estado, destacada, tags, fuente, fecha_publicacion)
-       VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11, NOW())
+         (titulo, slug, subtitulo, cuerpo, categoria_id, autor_id, imagen_url, estado, destacada, tags, fuente, imagenes, fecha_publicacion)
+       VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12, NOW())
        RETURNING *`;
 
     try {
@@ -171,7 +172,7 @@ const Noticia = {
   },
 
   /** Actualiza una noticia existente */
-  async update(id, { titulo, subtitulo, cuerpo, categoria_id, imagen_url, estado, destacada, tags, fuente }) {
+  async update(id, { titulo, subtitulo, cuerpo, categoria_id, imagen_url, estado, destacada, tags, fuente, imagenes }) {
     // Recalcula slug solo si cambia el título
     let slugUpdate = '';
     const params = [];
@@ -192,6 +193,7 @@ const Noticia = {
     if (destacada !== undefined)  { sets.push(`destacada = $${idx++}`);   params.push(destacada); }
     if (tags !== undefined)       { sets.push(`tags = $${idx++}`);        params.push(tags); }
     if (fuente !== undefined)     { sets.push(`fuente = $${idx++}`);      params.push(fuente); }
+    if (imagenes !== undefined)  { sets.push(`imagenes = $${idx++}`);    params.push(imagenes); }
 
     if (estado !== undefined) {
       sets.push(`estado = $${idx++}`);
@@ -229,7 +231,7 @@ const Noticia = {
          n.id::text, n.titulo, n.slug,
          n.subtitulo AS resumen, n.subtitulo,
          n.cuerpo    AS contenido, n.cuerpo,
-         n.imagen_url, n.estado,
+         n.imagen_url, n.imagenes, n.estado,
          (n.estado = 'publicado') AS publicado,
          n.destacada AS destacado, n.destacada,
          n.tags, n.fuente, n.vistas,

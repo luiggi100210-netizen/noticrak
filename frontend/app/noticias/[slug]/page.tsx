@@ -10,6 +10,7 @@ import { getNoticiaBySlug, getCategoriaColor, getCategoriaLabel, getNoticias } f
 import CategoryBadge from '../../../components/ui/CategoryBadge';
 import VistaCounter from '../../../components/noticias/VistaCounter';
 import SidebarCard from '../../../components/noticias/SidebarCard';
+import Carrusel from '../../../components/noticias/Carrusel';
 import type { Metadata } from 'next';
 
 const SANITIZE_OPTIONS: sanitizeHtml.IOptions = {
@@ -135,11 +136,13 @@ export default async function NoticiaPage({ params }: PageProps) {
             </span>
           </div>
 
-          {/* Imagen principal */}
-          {noticia.imagen_url && (
-            <div className="relative h-64 sm:h-80 lg:h-[400px] rounded-lg overflow-hidden mb-6">
-              <Image src={noticia.imagen_url} alt={noticia.titulo} fill className="object-cover" priority />
-            </div>
+          {/* Imagen principal o carrusel */}
+          {(noticia.imagen_url || (noticia.imagenes && noticia.imagenes.length > 0)) && (
+            <Carrusel
+              imagenes={noticia.imagenes || []}
+              titulo={noticia.titulo}
+              imagenPrincipal={noticia.imagen_url}
+            />
           )}
 
           {/* Video embed */}

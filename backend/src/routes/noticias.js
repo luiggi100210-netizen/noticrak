@@ -95,7 +95,7 @@ router.get('/:slug', async (req, res) => {
 
 // ── POST /api/noticias ────────────────────────────────────────────────────────
 router.post('/', verificarToken, async (req, res) => {
-  const { titulo, subtitulo, cuerpo, categoria_id, imagen_url, estado, destacada, tags, fuente } = req.body;
+  const { titulo, subtitulo, cuerpo, categoria_id, imagen_url, imagenes, estado, destacada, tags, fuente } = req.body;
 
   if (!titulo || !cuerpo) {
     return res.status(400).json({ error: 'Título y cuerpo son requeridos' });
@@ -105,7 +105,7 @@ router.post('/', verificarToken, async (req, res) => {
     const noticia = await Noticia.create({
       titulo, subtitulo, cuerpo, categoria_id,
       autor_id: req.usuario.id,
-      imagen_url, estado, destacada, tags, fuente,
+      imagen_url, imagenes, estado, destacada, tags, fuente,
     });
     res.status(201).json(noticia);
   } catch (err) {

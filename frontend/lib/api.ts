@@ -15,6 +15,7 @@ export interface Noticia {
   contenido?: string;
   categoria: string;
   imagen_url?: string;
+  imagenes?: string[];
   video_url?: string;
   tags: string[];
   publicado: boolean;

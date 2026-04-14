@@ -18,6 +18,7 @@ const TIPOS = ['Noticia', 'Reportaje', 'Opinión', 'Video'];
 const FORM_INICIAL = {
   titulo: '', subtitulo: '', cuerpo: '', categoria_id: '',
   imagen_url: '', tags: '', fuente: '', tipo: 'Noticia', destacada: false,
+  imagenes: [],
 };
 
 export default function NuevaNoticiaPage({ noticiaInicial, modoEdicion = false, noticiaId }) {
@@ -27,6 +28,7 @@ export default function NuevaNoticiaPage({ noticiaInicial, modoEdicion = false, 
   const [form, setForm]         = useState(noticiaInicial || { ...FORM_INICIAL, autor: usuario?.nombre || '' });
   const [preview, setPreview]   = useState(noticiaInicial?.imagen_url || '');
   const [subiendo, setSubiendo] = useState(false);
+  const [galeriaSubiendo, setGaleriaSubiendo] = useState(false);
   const [guardando, setGuardando] = useState(false);
   const [error, setError]       = useState('');
   const [exito, setExito]       = useState('');
@@ -58,6 +60,38 @@ export default function NuevaNoticiaPage({ noticiaInicial, modoEdicion = false, 
     }
   };
 
+  const handleGaleria = async (e) => {
+    const files = Array.from(e.target.files || []);
+    if (!files.length) return;
+    const total = (form.imagenes?.length || 0) + files.length;
+    if (total > 4) {
+      setError('Puedes subir máximo 4 fotos adicionales (5 en total con la portada)');
+      return;
+    }
+    setGaleriaSubiendo(true);
+    setError('');
+    try {
+      const urls = [];
+      for (const file of files) {
+        const formData = new FormData();
+        formData.append('imagen', file);
+        const { data } = await api.post('/upload/imagen', formData, {
+          headers: { 'Content-Type': 'multipart/form-data' },
+        });
+        urls.push(data.url);
+      }
+      setForm(f => ({ ...f, imagenes: [...(f.imagenes || []), ...urls] }));
+    } catch (err) {
+      setError(err.response?.data?.error || 'Error al subir imagen de galería');
+    } finally {
+      setGaleriaSubiendo(false);
+    }
+  };
+
+  const eliminarDeGaleria = (idx) => {
+    setForm(f => ({ ...f, imagenes: f.imagenes.filter((_, i) => i !== idx) }));
+  };
+
   const enviar = async (estado) => {
     if (!form.titulo.trim()) { setError('El titular es requerido'); return; }
     if (!form.cuerpo.trim()) { setError('El cuerpo es requerido'); return; }
@@ -72,6 +106,7 @@ export default function NuevaNoticiaPage({ noticiaInicial, modoEdicion = false, 
       cuerpo:      form.cuerpo.trim(),
       categoria_id: parseInt(form.categoria_id),
       imagen_url:  form.imagen_url || undefined,
+      imagenes:    form.imagenes || [],
       tags:        form.tags ? form.tags.split(',').map(t => t.trim()).filter(Boolean) : [],
       fuente:      form.fuente.trim() || undefined,
       destacada:   form.destacada,
@@ -191,6 +226,42 @@ export default function NuevaNoticiaPage({ noticiaInicial, modoEdicion = false, 
                 </label>
               )}
             </div>
+          </div>
+
+          {/* Galería — hasta 4 fotos adicionales */}
+          <div className="form-group">
+            <label>Galería de fotos <span style={{color:'#888', fontWeight:'normal'}}>(máx. 4 adicionales)</span></label>
+
+            {/* Miniaturas actuales */}
+            {form.imagenes?.length > 0 && (
+              <div style={{display:'grid', gridTemplateColumns:'repeat(2,1fr)', gap:8, marginBottom:8}}>
+                {form.imagenes.map((url, i) => (
+                  <div key={i} style={{position:'relative', borderRadius:6, overflow:'hidden', height:80}}>
+                    <img src={url} alt={`Foto ${i+2}`} style={{width:'100%', height:'100%', objectFit:'cover'}} />
+                    <button
+                      type="button"
+                      onClick={() => eliminarDeGaleria(i)}
+                      style={{position:'absolute',top:2,right:2,background:'rgba(0,0,0,0.6)',color:'#fff',border:'none',borderRadius:'50%',width:20,height:20,cursor:'pointer',fontSize:11,lineHeight:'20px',textAlign:'center'}}
+                    >✕</button>
+                  </div>
+                ))}
+              </div>
+            )}
+
+            {/* Botón agregar */}
+            {(!form.imagenes || form.imagenes.length < 4) && (
+              <label className="upload-label" style={{cursor:'pointer', padding:'8px 12px'}}>
+                <input
+                  type="file"
+                  accept="image/*"
+                  multiple
+                  onChange={handleGaleria}
+                  hidden
+                  disabled={galeriaSubiendo}
+                />
+                <span>{galeriaSubiendo ? 'Subiendo...' : '+ Agregar fotos a la galería'}</span>
+              </label>
+            )}
           </div>
 
           {/* Autor */}
