@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic';
+
 import { getPortada, API_URL } from '../lib/api';
 import RadioPlayer from '../components/radio/RadioPlayer';
 import NoticiaHero from '../components/noticias/NoticiaHero';

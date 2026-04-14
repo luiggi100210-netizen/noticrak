@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic';
+
 import { getVideosApi } from '../../lib/api';
 import VideoPlayer from '../../components/videos/VideoPlayer';
 import VideoGrid from '../../components/videos/VideoGrid';
