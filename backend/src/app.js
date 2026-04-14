@@ -32,6 +32,7 @@ const allowedOrigins = [
   process.env.ADMIN_URL,
   'https://noticrack.com',
   'https://www.noticrack.com',
+  'https://admin.noticrack.com',
 ].filter(Boolean);
 
 app.use(cors({
