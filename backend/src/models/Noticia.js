@@ -296,7 +296,29 @@ const Noticia = {
       }
     }
 
-    // Destacada: la noticia más reciente de todas las categorías
+    // Destacada: busca la noticia más reciente con destacada=true (fijada por el editor)
+    // Si no hay ninguna fijada, usa la noticia más reciente de todas las categorías
+    const { rows: fijadas } = await pool.query(
+      `SELECT
+         n.id::text, n.titulo, n.slug, n.subtitulo AS resumen,
+         n.imagen_url, n.estado, (n.estado = 'publicado') AS publicado,
+         n.destacada AS destacado, n.tags, n.fuente, n.vistas,
+         n.fecha_publicacion, n.updated_at AS "createdAt",
+         c.slug AS categoria, c.slug AS categoria_slug,
+         c.nombre AS categoria_nombre, c.color AS categoria_color,
+         u.nombre AS autor_nombre
+       FROM noticias n
+       LEFT JOIN categorias c ON c.id = n.categoria_id
+       LEFT JOIN usuarios   u ON u.id = n.autor_id
+       WHERE n.estado = 'publicado' AND n.destacada = true
+       ORDER BY n.fecha_publicacion DESC
+       LIMIT 1`
+    );
+
+    if (fijadas.length > 0) {
+      return { ...portada, destacada: fijadas[0] };
+    }
+
     const masReciente = rows.slice().sort(
       (a, b) => new Date(b.fecha_publicacion) - new Date(a.fecha_publicacion)
     )[0];
