@@ -144,7 +144,102 @@
 ::-webkit-scrollbar-track { @apply bg-slate-100 dark:bg-slate-800; }
 ::-webkit-scrollbar-thumb { @apply bg-slate-400 dark:bg-slate-600 rounded-full; }
 
-/* ── Mejoras editoriales ─────────────────────────────────── */
+/* ── Artículo editorial ──────────────────────────────────── */
+
+/* Cuerpo del artículo: más legible */
+.articulo-cuerpo p {
+  font-size: 1.08rem;
+  line-height: 1.9;
+  margin-bottom: 1.4em;
+  color: #1e293b;
+}
+.dark .articulo-cuerpo p {
+  color: #cbd5e1;
+}
+
+/* Primera letra grande (drop cap) */
+.articulo-cuerpo > p:first-of-type::first-letter {
+  font-size: 4rem;
+  font-weight: 900;
+  font-family: Georgia, serif;
+  float: left;
+  line-height: 0.8;
+  margin-right: 8px;
+  margin-top: 6px;
+  color: #be123c;
+}
+
+/* Encabezados dentro del artículo */
+.articulo-cuerpo h2 {
+  font-size: 1.4rem;
+  font-weight: 800;
+  font-family: Georgia, serif;
+  margin-top: 2em;
+  margin-bottom: 0.6em;
+  color: #0f172a;
+  border-left: 4px solid #be123c;
+  padding-left: 12px;
+}
+.dark .articulo-cuerpo h2 {
+  color: #f1f5f9;
+}
+.articulo-cuerpo h3 {
+  font-size: 1.15rem;
+  font-weight: 700;
+  margin-top: 1.6em;
+  margin-bottom: 0.4em;
+  color: #1e293b;
+}
+.dark .articulo-cuerpo h3 { color: #e2e8f0; }
+
+/* Citas destacadas */
+.articulo-cuerpo blockquote {
+  border-left: 4px solid #be123c;
+  background: #fff1f2;
+  padding: 16px 20px;
+  margin: 1.6em 0;
+  border-radius: 0 8px 8px 0;
+  font-style: italic;
+  color: #7f1d1d;
+  font-size: 1.05rem;
+}
+.dark .articulo-cuerpo blockquote {
+  background: #1e0a0a;
+  color: #fca5a5;
+}
+
+/* Imágenes dentro del artículo */
+.articulo-cuerpo img {
+  border-radius: 10px;
+  margin: 1.5em auto;
+  display: block;
+  max-width: 100%;
+}
+
+/* Links */
+.articulo-cuerpo a {
+  color: #be123c;
+  text-decoration: underline;
+  text-decoration-color: #fca5a5;
+  text-underline-offset: 3px;
+}
+.articulo-cuerpo a:hover {
+  text-decoration-color: #be123c;
+}
+
+/* Listas */
+.articulo-cuerpo ul, .articulo-cuerpo ol {
+  padding-left: 1.5em;
+  margin-bottom: 1.4em;
+}
+.articulo-cuerpo li {
+  margin-bottom: 0.4em;
+  line-height: 1.7;
+  color: #1e293b;
+}
+.dark .articulo-cuerpo li { color: #cbd5e1; }
+
+/* ── Mejoras editoriales ──────────────────────────────────── */
 .noticia-card-hover {
   transition: transform 0.2s ease, box-shadow 0.2s ease;
 }

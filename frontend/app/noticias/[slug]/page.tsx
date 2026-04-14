@@ -104,12 +104,12 @@ export default async function NoticiaPage({ params }: PageProps) {
 
           <CategoryBadge categoria={noticia.categoria} className="mb-3" />
 
-          <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold leading-tight mb-3" style={{ fontFamily: 'Georgia, serif' }}>
+          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-black leading-tight mb-4 text-slate-900 dark:text-white" style={{ fontFamily: 'Georgia, serif' }}>
             {noticia.titulo}
           </h1>
 
           {noticia.resumen && (
-            <p className="text-lg text-slate-500 dark:text-slate-400 border-l-4 border-primary-600 pl-4 mb-5 leading-relaxed">
+            <p className="text-xl text-slate-600 dark:text-slate-300 border-l-4 border-primary-600 pl-4 mb-5 leading-relaxed font-light" style={{ fontFamily: 'Georgia, serif' }}>
               {noticia.resumen}
             </p>
           )}
@@ -160,11 +160,7 @@ export default async function NoticiaPage({ params }: PageProps) {
 
           {/* Cuerpo del artículo */}
           <div
-            className="prose prose-lg prose-slate dark:prose-invert max-w-none
-              prose-headings:font-bold prose-headings:font-serif
-              prose-p:leading-relaxed prose-p:text-slate-700 dark:prose-p:text-slate-300
-              prose-a:text-primary-600 prose-a:no-underline hover:prose-a:underline
-              prose-img:rounded-xl prose-blockquote:border-l-primary-600"
+            className="articulo-cuerpo"
             style={{ fontFamily: 'Georgia, serif' }}
             dangerouslySetInnerHTML={{ __html: sanitizeHtml(noticia.contenido || '', SANITIZE_OPTIONS) }}
           />
