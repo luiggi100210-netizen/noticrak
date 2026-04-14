@@ -78,7 +78,7 @@ export default function Header() {
                 <polygon points="2,1 8,5.5 2,10" fill="white" />
               </svg>
             </span>
-            <span className="font-black text-2xl leading-none" style={{ fontFamily: 'Georgia, serif' }}>rack</span>
+            <span className="font-black text-2xl leading-none" style={{ fontFamily: 'Georgia, serif' }}>Crack</span>
           </Link>
 
           {/* Nav categorías (desktop) */}
