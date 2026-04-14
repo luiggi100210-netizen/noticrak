@@ -9,6 +9,7 @@ import NuevaNoticiaPage from './pages/NuevaNoticiaPage';
 import EditarNoticiaPage from './pages/EditarNoticiaPage';
 import VideosPage       from './pages/VideosPage';
 import NuevoVideoPage   from './pages/NuevoVideoPage';
+import EditarVideoPage  from './pages/EditarVideoPage';
 import UsuariosPage     from './pages/UsuariosPage';
 import RadioPage        from './pages/RadioPage';
 import RedesSocialesPage from './pages/RedesSocialesPage';
@@ -50,6 +51,7 @@ export default function App() {
       <Route path="/noticias/editar/:id" element={<PrivatePage><EditarNoticiaPage /></PrivatePage>} />
       <Route path="/videos"             element={<PrivatePage><VideosPage /></PrivatePage>} />
       <Route path="/videos/nuevo"       element={<PrivatePage><NuevoVideoPage /></PrivatePage>} />
+      <Route path="/videos/editar/:id"  element={<PrivatePage><EditarVideoPage /></PrivatePage>} />
       <Route path="/usuarios"           element={<PrivatePage soloAdmin><UsuariosPage /></PrivatePage>} />
       <Route path="/radio"              element={<PrivatePage soloAdmin><RadioPage /></PrivatePage>} />
       <Route path="/redes"              element={<PrivatePage soloAdmin><RedesSocialesPage /></PrivatePage>} />

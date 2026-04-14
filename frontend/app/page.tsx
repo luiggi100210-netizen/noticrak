@@ -1,6 +1,6 @@
 export const dynamic = 'force-dynamic';
 
-import { getPortada, API_URL } from '../lib/api';
+import { getPortada, getVideosApi, API_URL } from '../lib/api';
 import RadioPlayer from '../components/radio/RadioPlayer';
 import NoticiaHero from '../components/noticias/NoticiaHero';
 import SeccionNoticias from '../components/noticias/SeccionNoticias';
@@ -9,6 +9,7 @@ import UltimaHoraBar from '../components/noticias/UltimaHoraBar';
 import ClimaWidget from '../components/widgets/ClimaWidget';
 import CambioWidget from '../components/widgets/CambioWidget';
 import TendenciasWidget from '../components/widgets/TendenciasWidget';
+import SeccionVideos from '../components/videos/SeccionVideos';
 
 const PORTADA_VACIA = {
   cusco: [], politica: [], nacional: [], economia: [],
@@ -17,14 +18,16 @@ const PORTADA_VACIA = {
 };
 
 export default async function HomePage() {
-  const [portada, radioRes] = await Promise.all([
+  const [portada, radioRes, videosRes] = await Promise.all([
     getPortada().catch(() => PORTADA_VACIA),
     fetch(`${API_URL}/radio/ahora`, { cache: 'no-store' })
       .then(r => r.json())
       .catch(() => ({ ok: true, data: null })),
+    getVideosApi({ limite: 4 }).catch(() => ({ videos: [], total: 0, pagina: 1, totalPaginas: 1 })),
   ]);
 
   const radioData = radioRes?.data ?? null;
+  const videos = videosRes.videos ?? [];
 
   return (
     <main>
@@ -83,6 +86,12 @@ export default async function HomePage() {
           <GrillaCategoria titulo="Entretenimiento" noticias={portada.entretenimiento.slice(0, 3)} />
         </div>
       </div>
+
+      {videos.length > 0 && (
+        <div className="seccion-bloque">
+          <SeccionVideos videos={videos} />
+        </div>
+      )}
     </main>
   );
 }

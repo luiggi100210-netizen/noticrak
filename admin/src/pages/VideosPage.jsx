@@ -110,6 +110,7 @@ export default function VideosPage() {
                   </td>
                   <td className="col-acciones">
                     <a href={v.url} target="_blank" rel="noreferrer" className="btn-icon" title="Ver video">▶️</a>
+                    <button className="btn-icon btn-edit" onClick={() => navigate(`/videos/editar/${v.id}`)} title="Editar">✏️</button>
                     {confirmId === v.id ? (
                       <span className="confirm-row">
                         <button className="btn-icon btn-danger" onClick={() => eliminar(v.id)}>✓</button>
