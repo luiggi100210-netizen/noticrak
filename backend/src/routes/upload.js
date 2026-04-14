@@ -1,18 +1,16 @@
 const express = require('express');
-const multer = require('multer');
-const cloudinary = require('cloudinary').v2;
+const multer  = require('multer');
+const axios   = require('axios');
+const FormData = require('form-data');
 const { verificarToken } = require('../middleware/auth');
 
 const router = express.Router();
 
-// Configurar Cloudinary
-cloudinary.config({
-  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
-  api_key:    process.env.CLOUDINARY_API_KEY,
-  api_secret: process.env.CLOUDINARY_API_SECRET,
-});
+// URL del script PHP en cPanel
+const CPANEL_UPLOAD_URL = process.env.CPANEL_UPLOAD_URL || 'https://www.noticrack.com/upload.php';
+const CPANEL_UPLOAD_TOKEN = process.env.CPANEL_UPLOAD_TOKEN || 'noticrack_upload_2024_secret';
 
-// Multer: almacena en memoria para pasar el buffer a Cloudinary
+// Multer: almacena en memoria
 const upload = multer({
   storage: multer.memoryStorage(),
   limits: { fileSize: 10 * 1024 * 1024 }, // 10 MB
@@ -26,10 +24,6 @@ const upload = multer({
   },
 });
 
-/**
- * Verifica los magic bytes del buffer para confirmar que es una imagen real.
- * El Content-Type del cliente no es confiable; los bytes iniciales si.
- */
 function getMimeFromBuffer(buf) {
   if (buf[0] === 0xFF && buf[1] === 0xD8 && buf[2] === 0xFF) return 'image/jpeg';
   if (buf[0] === 0x89 && buf[1] === 0x50 && buf[2] === 0x4E && buf[3] === 0x47) return 'image/png';
@@ -40,22 +34,30 @@ function getMimeFromBuffer(buf) {
 }
 
 const MIME_PERMITIDOS = new Set(['image/jpeg', 'image/png', 'image/gif', 'image/webp']);
+const MIME_EXT = { 'image/jpeg': 'jpg', 'image/png': 'png', 'image/gif': 'gif', 'image/webp': 'webp' };
 
 /**
- * Sube un buffer a Cloudinary usando upload_stream.
- * Retorna la respuesta de Cloudinary (secure_url, public_id, etc.)
+ * Envía el buffer de imagen al script PHP en cPanel y retorna la URL pública.
  */
-function subirCloudinary(buffer, carpeta = 'noticrack') {
-  return new Promise((resolve, reject) => {
-    const stream = cloudinary.uploader.upload_stream(
-      { folder: carpeta, resource_type: 'image', quality: 'auto:good' },
-      (error, result) => {
-        if (error) return reject(error);
-        resolve(result);
-      }
-    );
-    stream.end(buffer);
+async function subirACPanel(buffer, mimeType, carpeta = 'noticias') {
+  const form = new FormData();
+  const ext  = MIME_EXT[mimeType] || 'jpg';
+  form.append('imagen', buffer, {
+    filename:    `imagen_${Date.now()}.${ext}`,
+    contentType: mimeType,
   });
+  form.append('carpeta', carpeta);
+
+  const response = await axios.post(CPANEL_UPLOAD_URL, form, {
+    headers: {
+      ...form.getHeaders(),
+      'X-Upload-Token': CPANEL_UPLOAD_TOKEN,
+    },
+    timeout: 30000,
+    maxContentLength: 15 * 1024 * 1024,
+  });
+
+  return response.data; // { url, filename, size }
 }
 
 // ── POST /api/upload/imagen ───────────────────────────────────────────────────
@@ -70,17 +72,15 @@ router.post('/imagen', verificarToken, upload.single('imagen'), async (req, res)
   }
 
   try {
-    const resultado = await subirCloudinary(req.file.buffer, 'noticrack/noticias');
+    const resultado = await subirACPanel(req.file.buffer, mimeReal, 'noticias');
     res.json({
-      url:       resultado.secure_url,
-      public_id: resultado.public_id,
-      width:     resultado.width,
-      height:    resultado.height,
-      formato:   resultado.format,
+      url:      resultado.url,
+      filename: resultado.filename,
+      size:     resultado.size,
     });
   } catch (err) {
-    console.error('Upload Cloudinary:', err.message);
-    res.status(500).json({ error: 'Error al subir la imagen a Cloudinary' });
+    console.error('Upload cPanel:', err.message);
+    res.status(500).json({ error: 'Error al subir la imagen al servidor' });
   }
 });
 
@@ -96,11 +96,32 @@ router.post('/avatar', verificarToken, upload.single('imagen'), async (req, res)
   }
 
   try {
-    const resultado = await subirCloudinary(req.file.buffer, 'noticrack/avatares');
-    res.json({ url: resultado.secure_url, public_id: resultado.public_id });
+    const resultado = await subirACPanel(req.file.buffer, mimeReal, 'avatares');
+    res.json({ url: resultado.url, filename: resultado.filename });
   } catch (err) {
-    console.error('Upload avatar Cloudinary:', err.message);
+    console.error('Upload avatar cPanel:', err.message);
     res.status(500).json({ error: 'Error al subir el avatar' });
+  }
+});
+
+// ── POST /api/upload/video-thumbnail ─────────────────────────────────────────
+// Sube la imagen de portada de un video
+router.post('/video-thumbnail', verificarToken, upload.single('imagen'), async (req, res) => {
+  if (!req.file) {
+    return res.status(400).json({ error: 'No se recibió ninguna imagen' });
+  }
+
+  const mimeReal = getMimeFromBuffer(req.file.buffer);
+  if (!mimeReal || !MIME_PERMITIDOS.has(mimeReal)) {
+    return res.status(400).json({ error: 'El archivo no es una imagen válida (JPG, PNG, WebP o GIF)' });
+  }
+
+  try {
+    const resultado = await subirACPanel(req.file.buffer, mimeReal, 'videos');
+    res.json({ url: resultado.url, filename: resultado.filename });
+  } catch (err) {
+    console.error('Upload video-thumbnail cPanel:', err.message);
+    res.status(500).json({ error: 'Error al subir la imagen del video' });
   }
 });
 
