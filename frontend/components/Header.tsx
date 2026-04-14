@@ -71,7 +71,7 @@ export default function Header() {
           <Link href="/" className="flex items-center flex-shrink-0 text-slate-900 dark:text-white">
             <span className="font-black text-2xl leading-none" style={{ fontFamily: 'Georgia, serif' }}>Noti</span>
             <span
-              className="mx-1 inline-flex items-center justify-center rounded-full flex-shrink-0"
+              className="inline-flex items-center justify-center rounded-full flex-shrink-0"
               style={{ width: 26, height: 26, backgroundColor: '#1a6fad' }}
             >
               <svg width="9" height="11" viewBox="0 0 9 11" fill="none">
