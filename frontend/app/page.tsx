@@ -5,6 +5,7 @@ import RadioPlayer from '../components/radio/RadioPlayer';
 import NoticiaHero from '../components/noticias/NoticiaHero';
 import SeccionNoticias from '../components/noticias/SeccionNoticias';
 import GrillaCategoria from '../components/noticias/GrillaCategoria';
+import UltimaHoraBar from '../components/noticias/UltimaHoraBar';
 import ClimaWidget from '../components/widgets/ClimaWidget';
 import CambioWidget from '../components/widgets/CambioWidget';
 import TendenciasWidget from '../components/widgets/TendenciasWidget';
@@ -49,6 +50,8 @@ export default async function HomePage() {
           <RadioPlayer config={radioData} />
         </div>
       )}
+
+      <UltimaHoraBar noticias={[...portada.cusco, ...portada.politica, ...portada.nacional].slice(0, 8)} />
 
       <div className="page-grid">
         <SeccionNoticias titulo="Cusco y Regiones" noticias={portada.cusco} />

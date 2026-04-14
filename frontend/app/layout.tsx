@@ -32,7 +32,7 @@ export default function RootLayout({
           <main className="min-h-screen">
             {children}
           </main>
-          <footer className="bg-slate-800 dark:bg-slate-950 text-white py-10 mt-16">
+          <footer className="bg-slate-800 dark:bg-slate-950 text-white py-10 mt-16 border-t-4 border-primary-600">
             <div className="max-w-7xl mx-auto px-4">
               <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
                 <div>
@@ -54,7 +54,7 @@ export default function RootLayout({
                 </div>
               </div>
               <div className="border-t border-slate-700 mt-8 pt-6 text-center text-slate-500 text-sm">
-                © {new Date().getFullYear()} NotiCrack. Todos los derechos reservados.
+                © {new Date().getFullYear()} <span className="text-primary-400">NotiCrack</span>. Todos los derechos reservados.
               </div>
             </div>
           </footer>

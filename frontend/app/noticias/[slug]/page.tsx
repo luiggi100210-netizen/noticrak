@@ -88,9 +88,9 @@ export default async function NoticiaPage({ params }: PageProps) {
       <div className="flex gap-10">
         <article className="flex-1 min-w-0">
           <nav className="text-sm text-slate-400 mb-4 flex items-center gap-1">
-            <Link href="/" className="hover:text-blue-600 transition-colors">Inicio</Link>
+            <Link href="/" className="hover:text-primary-600 transition-colors">Inicio</Link>
             <span>›</span>
-            <Link href={`/seccion/${noticia.categoria}`} className="hover:text-blue-600 transition-colors">
+            <Link href={`/seccion/${noticia.categoria}`} className="hover:text-primary-600 transition-colors">
               {getCategoriaLabel(noticia.categoria)}
             </Link>
           </nav>
@@ -102,7 +102,7 @@ export default async function NoticiaPage({ params }: PageProps) {
           </h1>
 
           {noticia.resumen && (
-            <p className="text-xl text-slate-500 dark:text-slate-400 font-light border-l-4 border-blue-500 pl-4 mb-6 leading-relaxed">
+            <p className="text-xl text-slate-500 dark:text-slate-400 font-light border-l-4 border-primary-600 pl-4 mb-6 leading-relaxed">
               {noticia.resumen}
             </p>
           )}
@@ -141,11 +141,11 @@ export default async function NoticiaPage({ params }: PageProps) {
           )}
 
           <div
-            className="prose prose-slate dark:prose-invert max-w-none
+            className="prose prose-lg prose-slate dark:prose-invert max-w-none
               prose-headings:font-bold prose-headings:font-serif
-              prose-p:text-base prose-p:leading-relaxed prose-p:text-slate-700 dark:prose-p:text-slate-300
-              prose-a:text-blue-600 prose-a:no-underline hover:prose-a:underline
-              prose-img:rounded-xl prose-blockquote:border-l-blue-500"
+              prose-p:leading-relaxed prose-p:text-slate-700 dark:prose-p:text-slate-300
+              prose-a:text-primary-600 prose-a:no-underline hover:prose-a:underline
+              prose-img:rounded-xl prose-blockquote:border-l-primary-600"
             style={{ fontFamily: 'Georgia, serif' }}
             dangerouslySetInnerHTML={{ __html: sanitizeHtml(noticia.contenido || '', SANITIZE_OPTIONS) }}
           />

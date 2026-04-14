@@ -2,7 +2,7 @@
 
 import { useEffect } from 'react';
 import Link from 'next/link';
-import { XMarkIcon, HomeIcon, NewspaperIcon, RadioIcon } from '@heroicons/react/24/outline';
+import { XMarkIcon, NewspaperIcon, RadioIcon } from '@heroicons/react/24/outline';
 import { CATEGORIAS } from '../lib/api';
 
 interface MenuDrawerProps {
@@ -44,7 +44,7 @@ export default function MenuDrawer({ open, onClose }: MenuDrawerProps) {
         <nav className="py-4 overflow-y-auto h-full pb-20">
           <div className="px-3 mb-2">
             <Link href="/" onClick={onClose} className="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 font-semibold transition-colors">
-              <HomeIcon className="w-5 h-5 text-primary-600" />
+              <span className="text-primary-600 font-bold text-base">⌂</span>
               Inicio
             </Link>
           </div>

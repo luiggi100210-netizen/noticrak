@@ -129,7 +129,7 @@ export default function NoticiaCard({ noticia, variant = 'grid', numero }: Notic
         <div className="flex-1 min-w-0">
           <CategoryBadge categoria={noticia.categoria} className="mb-1" />
           <h3
-            className="font-semibold text-sm leading-snug line-clamp-3 group-hover:text-blue-600 transition-colors"
+            className="font-semibold text-sm leading-snug line-clamp-3 group-hover:text-primary-600 transition-colors"
             style={{ fontFamily: 'Georgia, serif' }}
           >
             {noticia.titulo}
@@ -154,7 +154,7 @@ export default function NoticiaCard({ noticia, variant = 'grid', numero }: Notic
         <div className="flex-1 min-w-0">
           <CategoryBadge categoria={noticia.categoria} className="mb-1" />
           <h3
-            className="font-semibold text-sm leading-snug line-clamp-2 group-hover:text-blue-600 transition-colors"
+            className="font-semibold text-sm leading-snug line-clamp-2 group-hover:text-primary-600 transition-colors"
             style={{ fontFamily: 'Georgia, serif' }}
           >
             {noticia.titulo}
@@ -171,8 +171,8 @@ export default function NoticiaCard({ noticia, variant = 'grid', numero }: Notic
 
   // grid (default)
   return (
-    <Link href={`/noticias/${noticia.slug}`} className="group block">
-      {noticia.imagen_url && (
+    <Link href={`/noticias/${noticia.slug}`} className="group block noticia-card-hover">
+      {noticia.imagen_url ? (
         <div className="relative h-44 rounded-lg overflow-hidden mb-3">
           <Image
             src={noticia.imagen_url}
@@ -181,10 +181,19 @@ export default function NoticiaCard({ noticia, variant = 'grid', numero }: Notic
             className="object-cover group-hover:scale-105 transition-transform duration-300"
           />
         </div>
+      ) : (
+        <div
+          className="h-44 rounded-lg mb-3 flex items-end p-3"
+          style={{ backgroundColor: CAT_COLORS[noticia.categoria] ?? '#334155' }}
+        >
+          <span className="text-white/30 text-5xl font-black uppercase leading-none" style={{ fontFamily: 'Georgia, serif' }}>
+            {noticia.categoria.slice(0, 3)}
+          </span>
+        </div>
       )}
       <CategoryBadge categoria={noticia.categoria} className="mb-2" />
       <h3
-        className="font-semibold leading-snug line-clamp-2 group-hover:text-blue-600 transition-colors mb-2"
+        className="font-semibold leading-snug line-clamp-2 group-hover:text-primary-600 transition-colors mb-2"
         style={{ fontFamily: 'Georgia, serif' }}
       >
         {noticia.titulo}

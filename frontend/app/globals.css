@@ -143,3 +143,43 @@
 ::-webkit-scrollbar { width: 6px; }
 ::-webkit-scrollbar-track { @apply bg-slate-100 dark:bg-slate-800; }
 ::-webkit-scrollbar-thumb { @apply bg-slate-400 dark:bg-slate-600 rounded-full; }
+
+/* ── Mejoras editoriales ─────────────────────────────────── */
+.noticia-card-hover {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.noticia-card-hover:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+}
+
+/* Barra última hora */
+.ultima-hora-bar {
+  background: #be123c;
+  color: white;
+  padding: 6px 0;
+  overflow: hidden;
+}
+.ultima-hora-bar .label {
+  background: #881337;
+  padding: 2px 12px;
+  font-size: 11px;
+  font-weight: 900;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+.ultima-hora-scroll {
+  display: flex;
+  gap: 40px;
+  animation: scroll-left 40s linear infinite;
+  white-space: nowrap;
+}
+.ultima-hora-scroll:hover {
+  animation-play-state: paused;
+}
+@keyframes scroll-left {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
