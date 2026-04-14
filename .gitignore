@@ -28,3 +28,19 @@ Thumbs.db
 
 # Docker volumes
 pgdata/
+
+# Zip/deploy artifacts
+*.zip
+*.bat
+
+# Admin dist (se sube manualmente al cPanel)
+admin/dist/
+
+# Seed scripts temporales
+backend/seed-*.js
+
+# Build info
+frontend/tsconfig.tsbuildinfo
+
+# Netlify state
+admin/.netlify/
