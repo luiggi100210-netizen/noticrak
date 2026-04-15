@@ -70,8 +70,8 @@ export default async function VideosPage({ searchParams }: { searchParams: Promi
               {videoDestacado.autor_nombre && (
                 <span>Por <strong className="text-slate-600 dark:text-slate-300">{videoDestacado.autor_nombre}</strong></span>
               )}
-              <span>{formatDistanceToNow(new Date(videoDestacado.created_at), { addSuffix: true, locale: es })}</span>
-              <span>{videoDestacado.vistas.toLocaleString()} vistas</span>
+              <span>{formatDistanceToNow(new Date(videoDestacado.created_at ?? Date.now()), { addSuffix: true, locale: es })}</span>
+              <span>{(videoDestacado.vistas ?? 0).toLocaleString()} vistas</span>
               {videoDestacado.duracion && <span>Duración: {videoDestacado.duracion}</span>}
             </div>
           </div>
@@ -102,7 +102,7 @@ export default async function VideosPage({ searchParams }: { searchParams: Promi
                     {video.titulo}
                   </h4>
                   <p className="text-xs text-slate-400">
-                    {formatDistanceToNow(new Date(video.created_at), { addSuffix: true, locale: es })}
+                    {formatDistanceToNow(new Date(video.created_at ?? Date.now()), { addSuffix: true, locale: es })}
                   </p>
                 </div>
               </Link>

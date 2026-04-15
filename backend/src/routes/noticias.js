@@ -68,6 +68,17 @@ router.get('/destacadas', async (req, res) => {
   }
 });
 
+// ── GET /api/noticias/ticker ──────────────────────────────────────────────────
+router.get('/ticker', async (req, res) => {
+  try {
+    const resultado = await Noticia.getAll({ estado: 'publicado', limite: 10, pagina: 1 });
+    res.json(resultado.noticias);
+  } catch (err) {
+    console.error('GET /noticias/ticker:', err.message);
+    res.status(500).json({ error: 'Error al obtener ticker' });
+  }
+});
+
 // ── GET /api/noticias/portada ─────────────────────────────────────────────────
 router.get('/portada', async (req, res) => {
   try {
