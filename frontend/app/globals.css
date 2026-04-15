@@ -158,9 +158,9 @@
 /* Párrafos */
 .articulo-cuerpo p {
   font-size: 1.1rem;
-  line-height: 1.85;
-  margin-bottom: 1.5em;
-  color: #1e293b;
+  line-height: 1.9;
+  margin-bottom: 1.8em;
+  color: #334155;
 }
 .dark .articulo-cuerpo p {
   color: #cbd5e1;
