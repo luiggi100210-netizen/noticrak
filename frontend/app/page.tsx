@@ -54,8 +54,6 @@ export default async function HomePage() {
         </div>
       )}
 
-      <UltimaHoraBar noticias={[...portada.cusco, ...portada.politica, ...portada.nacional].slice(0, 8)} />
-
       <div className="page-grid">
         <SeccionNoticias titulo="Cusco y Regiones" noticias={portada.cusco} />
         <aside className="sidebar">
