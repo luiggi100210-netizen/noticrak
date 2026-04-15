@@ -38,6 +38,19 @@ const getEmbedUrl = (url: string) => {
   return url;
 };
 
+// Convierte texto plano con saltos de línea en párrafos HTML
+function procesarContenido(contenido: string): string {
+  if (!contenido) return '';
+  // Si ya tiene etiquetas <p>, devolver tal cual
+  if (contenido.includes('<p>') || contenido.includes('<p ')) return contenido;
+  // Convertir dobles saltos de línea en párrafos
+  return '<p>' + contenido
+    .split(/\n{2,}/)
+    .map(parrafo => parrafo.replace(/\n/g, '<br>').trim())
+    .filter(Boolean)
+    .join('</p><p>') + '</p>';
+}
+
 export default function NoticiaClientPage() {
   const params = useParams();
   const slug = Array.isArray(params.slug) ? params.slug[0] : params.slug;
@@ -157,7 +170,7 @@ export default function NoticiaClientPage() {
 
           <div
             className="articulo-cuerpo"
-            dangerouslySetInnerHTML={{ __html: sanitizeHtml(noticia.contenido || '', SANITIZE_OPTIONS) }}
+            dangerouslySetInnerHTML={{ __html: sanitizeHtml(procesarContenido(noticia.contenido || ''), SANITIZE_OPTIONS) }}
           />
 
           {noticia.tags && noticia.tags.length > 0 && (

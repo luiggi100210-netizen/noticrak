@@ -61,6 +61,16 @@ const getEmbedUrl = (url: string) => {
   return url;
 };
 
+function procesarContenido(contenido: string): string {
+  if (!contenido) return '';
+  if (contenido.includes('<p>') || contenido.includes('<p ')) return contenido;
+  return '<p>' + contenido
+    .split(/\n{2,}/)
+    .map(parrafo => parrafo.replace(/\n/g, '<br>').trim())
+    .filter(Boolean)
+    .join('</p><p>') + '</p>';
+}
+
 export default async function NoticiaPage({ params }: PageProps) {
   const { slug } = await params;
   let data: Awaited<ReturnType<typeof getNoticiaBySlug>>;
@@ -161,7 +171,7 @@ export default async function NoticiaPage({ params }: PageProps) {
           {/* Cuerpo del artículo */}
           <div
             className="articulo-cuerpo"
-            dangerouslySetInnerHTML={{ __html: sanitizeHtml(noticia.contenido || '', SANITIZE_OPTIONS) }}
+            dangerouslySetInnerHTML={{ __html: sanitizeHtml(procesarContenido(noticia.contenido || ''), SANITIZE_OPTIONS) }}
           />
 
           {/* Tags */}
