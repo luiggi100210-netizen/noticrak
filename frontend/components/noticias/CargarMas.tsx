@@ -46,7 +46,7 @@ export default function CargarMas({ categoria, paginaActual, totalPaginas }: Car
         <button
           onClick={cargar}
           disabled={cargando}
-          className="px-8 py-3 bg-blue-600 hover:bg-blue-700 disabled:bg-blue-400 text-white font-semibold rounded-lg transition-colors"
+          className="px-8 py-3 bg-primary-600 hover:bg-primary-700 disabled:bg-primary-300 text-white font-semibold rounded-lg transition-colors"
         >
           {cargando ? 'Cargando...' : 'Cargar más noticias'}
         </button>

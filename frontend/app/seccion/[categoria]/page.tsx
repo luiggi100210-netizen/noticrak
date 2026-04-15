@@ -49,7 +49,7 @@ export default async function SeccionPage({ params, searchParams }: PageProps) {
         <div className="flex items-center gap-4">
           <span className={`w-2 h-14 ${color} rounded-full flex-shrink-0`} />
           <div>
-            <h1 className="text-4xl font-bold" style={{ fontFamily: 'Georgia, serif' }}>{label}</h1>
+            <h1 className="font-heading text-4xl font-bold">{label}</h1>
             <p className="text-slate-400 mt-1 text-sm">{result.total} noticias</p>
           </div>
         </div>
@@ -68,7 +68,7 @@ export default async function SeccionPage({ params, searchParams }: PageProps) {
         <div className="text-center py-24 text-slate-400">
           <p className="text-5xl mb-4">📰</p>
           <p className="text-xl font-semibold">Sin noticias en esta sección</p>
-          <Link href="/" className="inline-block mt-6 px-6 py-3 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-700 transition-colors">
+          <Link href="/" className="inline-block mt-6 px-6 py-3 bg-primary-600 text-white rounded-lg font-semibold hover:bg-primary-700 transition-colors">
             Volver al inicio
           </Link>
         </div>
@@ -95,7 +95,7 @@ export default async function SeccionPage({ params, searchParams }: PageProps) {
                     ← Anterior
                   </Link>
                 )}
-                <span className="px-4 py-2 bg-blue-600 text-white rounded-lg font-medium text-sm">
+                <span className="px-4 py-2 bg-primary-600 text-white rounded-lg font-medium text-sm">
                   {pagina} / {result.totalPaginas}
                 </span>
                 {pagina < result.totalPaginas && (

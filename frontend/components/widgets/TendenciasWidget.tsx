@@ -45,8 +45,7 @@ export default function TendenciasWidget() {
                   {idx + 1}
                 </span>
                 <p
-                  className="text-xs font-medium leading-snug line-clamp-2 group-hover:text-blue-600 transition-colors"
-                  style={{ fontFamily: 'Georgia, serif' }}
+                  className="font-heading text-xs font-medium leading-snug line-clamp-2 group-hover:text-blue-600 transition-colors"
                 >
                   {noticia.titulo}
                 </p>

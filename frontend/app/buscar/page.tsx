@@ -57,7 +57,7 @@ export default async function BuscarPage({ searchParams }: PageProps) {
             className="flex-1 px-4 py-3 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500 text-base"
             autoFocus
           />
-          <button type="submit" className="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg transition-colors">
+          <button type="submit" className="px-6 py-3 bg-primary-600 hover:bg-primary-700 text-white font-semibold rounded-lg transition-colors">
             Buscar
           </button>
         </div>
@@ -73,7 +73,7 @@ export default async function BuscarPage({ searchParams }: PageProps) {
           <p className="text-5xl mb-4">😔</p>
           <p className="text-xl font-semibold">No encontramos resultados</p>
           <p className="mt-2">No hay noticias que coincidan con <strong>&ldquo;{q}&rdquo;</strong></p>
-          <Link href="/" className="inline-block mt-6 px-6 py-3 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-700 transition-colors">
+          <Link href="/" className="inline-block mt-6 px-6 py-3 bg-primary-600 text-white rounded-lg font-semibold hover:bg-primary-700 transition-colors">
             Volver al inicio
           </Link>
         </div>

@@ -139,6 +139,11 @@
   padding: 24px;
 }
 
+/* Safe area para notch de iPhone (bottom nav) */
+.safe-area-bottom {
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+
 /* Scrollbar personalizado */
 ::-webkit-scrollbar { width: 6px; }
 ::-webkit-scrollbar-track { @apply bg-slate-100 dark:bg-slate-800; }
@@ -146,46 +151,49 @@
 
 /* ── Artículo editorial ──────────────────────────────────── */
 
-/* Cuerpo del artículo: más legible */
+.articulo-cuerpo {
+  font-family: 'Inter', sans-serif;
+}
+
+/* Párrafos */
 .articulo-cuerpo p {
-  font-size: 1.08rem;
+  font-size: 1.1rem;
   line-height: 1.9;
-  margin-bottom: 1.4em;
-  color: #1e293b;
+  margin-bottom: 1.8em;
+  color: #334155;
 }
 .dark .articulo-cuerpo p {
   color: #cbd5e1;
 }
 
-/* Primera letra grande (drop cap) */
-.articulo-cuerpo > p:first-of-type::first-letter {
-  font-size: 4rem;
-  font-weight: 900;
-  font-family: Georgia, serif;
-  float: left;
-  line-height: 0.8;
-  margin-right: 8px;
-  margin-top: 6px;
-  color: #be123c;
+/* Negritas bien marcadas */
+.articulo-cuerpo strong,
+.articulo-cuerpo b {
+  font-weight: 700;
+  color: #0f172a;
+}
+.dark .articulo-cuerpo strong,
+.dark .articulo-cuerpo b {
+  color: #f1f5f9;
 }
 
 /* Encabezados dentro del artículo */
 .articulo-cuerpo h2 {
-  font-size: 1.4rem;
+  font-size: 1.35rem;
   font-weight: 800;
-  font-family: Georgia, serif;
+  font-family: 'Merriweather', serif;
   margin-top: 2em;
   margin-bottom: 0.6em;
   color: #0f172a;
   border-left: 4px solid #be123c;
   padding-left: 12px;
 }
-.dark .articulo-cuerpo h2 {
-  color: #f1f5f9;
-}
+.dark .articulo-cuerpo h2 { color: #f1f5f9; }
+
 .articulo-cuerpo h3 {
   font-size: 1.15rem;
   font-weight: 700;
+  font-family: 'Merriweather', serif;
   margin-top: 1.6em;
   margin-bottom: 0.4em;
   color: #1e293b;
@@ -233,8 +241,9 @@
   margin-bottom: 1.4em;
 }
 .articulo-cuerpo li {
-  margin-bottom: 0.4em;
-  line-height: 1.7;
+  font-size: 1.1rem;
+  margin-bottom: 0.5em;
+  line-height: 1.75;
   color: #1e293b;
 }
 .dark .articulo-cuerpo li { color: #cbd5e1; }

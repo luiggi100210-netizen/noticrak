@@ -106,7 +106,7 @@ export default function RadioPlayer({ config }: RadioPlayerProps) {
             <div className="flex items-center gap-4">
               <button
                 onClick={togglePlay}
-                className="w-14 h-14 bg-blue-500 hover:bg-blue-400 active:scale-95 rounded-full flex items-center justify-center transition-all shadow-lg flex-shrink-0"
+                className="w-14 h-14 bg-accent hover:bg-accent-light active:scale-95 rounded-full flex items-center justify-center transition-all shadow-lg flex-shrink-0"
                 aria-label={playing ? 'Pausar' : 'Reproducir'}
               >
                 {playing ? (

@@ -38,6 +38,19 @@ const getEmbedUrl = (url: string) => {
   return url;
 };
 
+// Convierte texto plano con saltos de línea en párrafos HTML
+function procesarContenido(contenido: string): string {
+  if (!contenido) return '';
+  // Si ya tiene etiquetas <p>, devolver tal cual
+  if (contenido.includes('<p>') || contenido.includes('<p ')) return contenido;
+  // Convertir dobles saltos de línea en párrafos
+  return '<p>' + contenido
+    .split(/\n{2,}/)
+    .map(parrafo => parrafo.replace(/\n/g, '<br>').trim())
+    .filter(Boolean)
+    .join('</p><p>') + '</p>';
+}
+
 export default function NoticiaClientPage() {
   const params = useParams();
   const slug = Array.isArray(params.slug) ? params.slug[0] : params.slug;
@@ -112,7 +125,7 @@ export default function NoticiaClientPage() {
 
           <CategoryBadge categoria={noticia.categoria} className="mb-4" />
 
-          <h1 className="text-3xl sm:text-4xl font-bold leading-tight mb-4" style={{ fontFamily: 'Georgia, serif' }}>
+          <h1 className="font-heading text-3xl sm:text-4xl font-bold leading-tight mb-4">
             {noticia.titulo}
           </h1>
 
@@ -156,13 +169,8 @@ export default function NoticiaClientPage() {
           )}
 
           <div
-            className="prose prose-slate dark:prose-invert max-w-none
-              prose-headings:font-bold prose-headings:font-serif
-              prose-p:text-base prose-p:leading-relaxed prose-p:text-slate-700 dark:prose-p:text-slate-300
-              prose-a:text-blue-600 prose-a:no-underline hover:prose-a:underline
-              prose-img:rounded-xl prose-blockquote:border-l-blue-500"
-            style={{ fontFamily: 'Georgia, serif' }}
-            dangerouslySetInnerHTML={{ __html: sanitizeHtml(noticia.contenido || '', SANITIZE_OPTIONS) }}
+            className="articulo-cuerpo"
+            dangerouslySetInnerHTML={{ __html: sanitizeHtml(procesarContenido(noticia.contenido || ''), SANITIZE_OPTIONS) }}
           />
 
           {noticia.tags && noticia.tags.length > 0 && (

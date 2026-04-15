@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { useParams, useSearchParams } from 'next/navigation';
 import { getNoticias, CATEGORIAS, getCategoriaLabel, getCategoriaColor, type Noticia } from '../../../lib/api';
 import NoticiaCard from '../../../components/noticias/NoticiaCard';
+import { GridSkeleton } from '../../../components/ui/CardSkeleton';
 import Divider from '../../../components/ui/Divider';
 import Link from 'next/link';
 
@@ -81,7 +82,7 @@ export default function SeccionClientPage() {
         <div className="flex items-center gap-4">
           <span className={`w-2 h-14 ${color} rounded-full flex-shrink-0`} />
           <div>
-            <h1 className="text-4xl font-bold" style={{ fontFamily: 'Georgia, serif' }}>{label}</h1>
+            <h1 className="font-heading text-4xl font-bold">{label}</h1>
             {!cargando && <p className="text-slate-400 mt-1 text-sm">{total} noticias</p>}
           </div>
         </div>
@@ -101,24 +102,16 @@ export default function SeccionClientPage() {
       </div>
 
       {cargando ? (
-        <div className="animate-pulse space-y-4">
-          <div className="h-[420px] bg-slate-200 dark:bg-slate-700 rounded-xl" />
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-5 mt-8">
-            {[...Array(8)].map((_, i) => (
-              <div key={i} className="space-y-2">
-                <div className="h-44 bg-slate-200 dark:bg-slate-700 rounded-lg" />
-                <div className="h-4 bg-slate-200 dark:bg-slate-700 rounded" />
-                <div className="h-4 bg-slate-200 dark:bg-slate-700 rounded w-3/4" />
-              </div>
-            ))}
-          </div>
+        <div className="space-y-6">
+          <div className="bg-slate-200 dark:bg-slate-700 rounded-xl h-[420px] animate-pulse" />
+          <GridSkeleton count={8} variant="grid" />
         </div>
       ) : todasLasNoticias.length === 0 ? (
         <div className="text-center py-24 text-slate-400">
           <p className="text-5xl mb-4">📰</p>
           <p className="text-xl font-semibold">Sin noticias en esta sección</p>
           <p className="mt-2">Pronto habrá contenido aquí</p>
-          <Link href="/" className="inline-block mt-6 px-6 py-3 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-700 transition-colors">
+          <Link href="/" className="inline-block mt-6 px-6 py-3 bg-primary-600 text-white rounded-lg font-semibold hover:bg-primary-700 transition-colors">
             Volver al inicio
           </Link>
         </div>
@@ -142,7 +135,7 @@ export default function SeccionClientPage() {
                 <button
                   onClick={cargarMas}
                   disabled={cargandoMas}
-                  className="px-8 py-3 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-700 transition-colors disabled:opacity-60"
+                  className="px-8 py-3 bg-primary-600 text-white rounded-lg font-semibold hover:bg-primary-700 transition-colors disabled:opacity-60"
                 >
                   {cargandoMas ? 'Cargando...' : 'Cargar más noticias'}
                 </button>
@@ -154,7 +147,7 @@ export default function SeccionClientPage() {
                     ← Anterior
                   </Link>
                 )}
-                <span className="px-4 py-2 bg-blue-600 text-white rounded-lg font-medium text-sm">
+                <span className="px-4 py-2 bg-primary-600 text-white rounded-lg font-medium text-sm">
                   {pagina} / {totalPaginas}
                 </span>
                 {pagina < totalPaginas && (

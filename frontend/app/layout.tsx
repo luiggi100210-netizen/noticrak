@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import './globals.css';
 import { ThemeProvider } from '../components/ThemeProvider';
 import Header from '../components/Header';
+import BottomNav from '../components/BottomNav';
 import RedesFlotantes from '../components/ui/RedesFlotantes';
 
 export const metadata: Metadata = {
@@ -29,7 +30,7 @@ export default function RootLayout({
       <body>
         <ThemeProvider>
           <Header />
-          <main className="min-h-screen">
+          <main className="min-h-screen pb-16 sm:pb-0">
             {children}
           </main>
           <footer className="bg-slate-800 dark:bg-slate-950 text-white py-10 mt-16 border-t-4 border-primary-600">
@@ -58,6 +59,7 @@ export default function RootLayout({
               </div>
             </div>
           </footer>
+        <BottomNav />
         <RedesFlotantes />
         </ThemeProvider>
       </body>

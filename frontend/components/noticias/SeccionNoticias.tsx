@@ -20,9 +20,9 @@ export default function SeccionNoticias({ titulo, noticias }: SeccionNoticiasPro
           {/* Primera noticia: card grande con imagen */}
           <NoticiaCard noticia={noticias[0]} variant="featured" />
 
-          {/* Resto: grilla de 3 columnas */}
+          {/* Resto: grilla responsive */}
           {noticias.length > 1 && (
-            <div className="grid grid-cols-3 gap-3">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
               {noticias.slice(1).map((n) => (
                 <NoticiaCard key={n.id} noticia={n} variant="grid" />
               ))}
