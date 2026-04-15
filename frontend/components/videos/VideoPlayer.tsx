@@ -4,6 +4,7 @@ import { useState } from 'react';
 import Image from 'next/image';
 import type { Video } from '../../lib/api';
 
+
 interface VideoPlayerProps {
   video: Video;
 }
@@ -32,6 +33,7 @@ function getPlatformLabel(url: string): string {
 
 export default function VideoPlayer({ video }: VideoPlayerProps) {
   const [playing, setPlaying] = useState(false);
+  const [imgError, setImgError] = useState(false);
 
   const esLive   = video.estado === 'live' || video.estado === 'en_vivo';
   const embedUrl = getEmbedUrl(video.url);
@@ -57,13 +59,14 @@ export default function VideoPlayer({ video }: VideoPlayerProps) {
       ) : (
         <>
           {/* Thumbnail */}
-          {video.imagen_url ? (
+          {video.imagen_url && !imgError ? (
             <Image
               src={video.imagen_url}
               alt={video.titulo}
               fill
               className="object-cover"
               priority
+              onError={() => setImgError(true)}
             />
           ) : (
             <div className="w-full h-full bg-gradient-to-br from-slate-800 to-slate-900 flex items-center justify-center">

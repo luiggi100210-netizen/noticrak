@@ -15,7 +15,7 @@ export const metadata: Metadata = {
   description: 'Últimos videos y transmisiones en vivo de NotiCrack',
 };
 
-export default async function VideosPage() {
+export default async function VideosPage({ searchParams }: { searchParams: { id?: string } }) {
   const resultado = await getVideosApi({ limite: 12 }).catch(() => ({
     videos: [], total: 0, pagina: 1, totalPaginas: 1,
   }));
@@ -34,7 +34,13 @@ export default async function VideosPage() {
     );
   }
 
-  const [videoDestacado, ...restVideos] = videos;
+  // Si viene ?id=X en la URL, ese video es el destacado
+  const idSeleccionado = searchParams?.id ? Number(searchParams.id) : null;
+  const indexSeleccionado = idSeleccionado ? videos.findIndex(v => v.id === idSeleccionado) : 0;
+  const indexDestacado = indexSeleccionado >= 0 ? indexSeleccionado : 0;
+
+  const videoDestacado = videos[indexDestacado];
+  const restVideos = videos.filter((_, i) => i !== indexDestacado);
 
   return (
     <div className="max-w-7xl mx-auto px-4 py-8">
@@ -73,9 +79,16 @@ export default async function VideosPage() {
           <div className="space-y-4">
             {restVideos.slice(0, 4).map(video => (
               <Link key={video.id} href={`/videos?id=${video.id}`} className="group flex gap-3">
-                <div className="relative w-28 h-20 flex-shrink-0 rounded-lg overflow-hidden bg-slate-800">
-                  {video.imagen_url && (
-                    <img src={video.imagen_url} alt={video.titulo} className="w-full h-full object-cover group-hover:opacity-80 transition-opacity" />
+                <div className="relative w-28 h-20 flex-shrink-0 rounded-lg overflow-hidden bg-slate-800 flex items-center justify-center">
+                  {video.imagen_url ? (
+                    <img
+                      src={video.imagen_url}
+                      alt={video.titulo}
+                      className="w-full h-full object-cover group-hover:opacity-80 transition-opacity"
+                      onError={(e) => { (e.currentTarget as HTMLImageElement).style.display = 'none'; }}
+                    />
+                  ) : (
+                    <span className="text-2xl">🎬</span>
                   )}
                   {video.duracion && (
                     <span className="absolute bottom-1 right-1 bg-black/70 text-white text-xs font-mono px-1 py-0.5 rounded">{video.duracion}</span>
