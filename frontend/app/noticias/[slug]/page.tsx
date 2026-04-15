@@ -160,7 +160,7 @@ export default async function NoticiaPage({ params }: PageProps) {
 
           {/* Cuerpo del artículo */}
           <div
-            className="font-heading articulo-cuerpo"
+            className="articulo-cuerpo"
             dangerouslySetInnerHTML={{ __html: sanitizeHtml(noticia.contenido || '', SANITIZE_OPTIONS) }}
           />
 
