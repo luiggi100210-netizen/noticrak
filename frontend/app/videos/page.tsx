@@ -15,10 +15,13 @@ export const metadata: Metadata = {
   description: 'Últimos videos y transmisiones en vivo de NotiCrack',
 };
 
-export default async function VideosPage({ searchParams }: { searchParams: { id?: string } }) {
-  const resultado = await getVideosApi({ limite: 12 }).catch(() => ({
-    videos: [], total: 0, pagina: 1, totalPaginas: 1,
-  }));
+export default async function VideosPage({ searchParams }: { searchParams: Promise<{ id?: string }> }) {
+  const [resultado, params] = await Promise.all([
+    getVideosApi({ limite: 12 }).catch(() => ({
+      videos: [], total: 0, pagina: 1, totalPaginas: 1,
+    })),
+    searchParams,
+  ]);
 
   const { videos } = resultado;
 
@@ -35,7 +38,7 @@ export default async function VideosPage({ searchParams }: { searchParams: { id?
   }
 
   // Si viene ?id=X en la URL, ese video es el destacado
-  const idSeleccionado = searchParams?.id ? Number(searchParams.id) : null;
+  const idSeleccionado = params?.id ? Number(params.id) : null;
   const indexSeleccionado = idSeleccionado ? videos.findIndex(v => v.id === idSeleccionado) : 0;
   const indexDestacado = indexSeleccionado >= 0 ? indexSeleccionado : 0;
 
