@@ -156,11 +156,7 @@ export default function NoticiaClientPage() {
           )}
 
           <div
-            className="font-heading prose prose-slate dark:prose-invert max-w-none
-              prose-headings:font-bold prose-headings:font-serif
-              prose-p:text-base prose-p:leading-relaxed prose-p:text-slate-700 dark:prose-p:text-slate-300
-              prose-a:text-blue-600 prose-a:no-underline hover:prose-a:underline
-              prose-img:rounded-xl prose-blockquote:border-l-blue-500"
+            className="articulo-cuerpo"
             dangerouslySetInnerHTML={{ __html: sanitizeHtml(noticia.contenido || '', SANITIZE_OPTIONS) }}
           />
 
