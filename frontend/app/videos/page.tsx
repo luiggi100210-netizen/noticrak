@@ -4,6 +4,7 @@ import { getVideosApi } from '../../lib/api';
 import VideoPlayer from '../../components/videos/VideoPlayer';
 import VideoGrid from '../../components/videos/VideoGrid';
 import VideoShorts from '../../components/videos/VideoShorts';
+import VideoThumb from '../../components/videos/VideoThumb';
 import Divider from '../../components/ui/Divider';
 import Link from 'next/link';
 import { formatDistanceToNow } from 'date-fns';
@@ -82,21 +83,7 @@ export default async function VideosPage({ searchParams }: { searchParams: Promi
           <div className="space-y-4">
             {restVideos.slice(0, 4).map(video => (
               <Link key={video.id} href={`/videos?id=${video.id}`} className="group flex gap-3">
-                <div className="relative w-28 h-20 flex-shrink-0 rounded-lg overflow-hidden bg-slate-800 flex items-center justify-center">
-                  {video.imagen_url ? (
-                    <img
-                      src={video.imagen_url}
-                      alt={video.titulo}
-                      className="w-full h-full object-cover group-hover:opacity-80 transition-opacity"
-                      onError={(e) => { (e.currentTarget as HTMLImageElement).style.display = 'none'; }}
-                    />
-                  ) : (
-                    <span className="text-2xl">🎬</span>
-                  )}
-                  {video.duracion && (
-                    <span className="absolute bottom-1 right-1 bg-black/70 text-white text-xs font-mono px-1 py-0.5 rounded">{video.duracion}</span>
-                  )}
-                </div>
+                <VideoThumb src={video.imagen_url} alt={video.titulo} duracion={video.duracion} />
                 <div className="flex-1 min-w-0 py-0.5">
                   <h4 className="font-heading text-sm font-semibold line-clamp-2 leading-snug group-hover:text-blue-600 transition-colors mb-1">
                     {video.titulo}
