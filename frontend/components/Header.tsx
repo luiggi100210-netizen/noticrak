@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
+import { useRouter, usePathname } from 'next/navigation';
 import { useTheme } from './ThemeProvider';
 import MenuDrawer from './MenuDrawer';
 import {
@@ -22,7 +22,13 @@ export default function Header() {
   const [ticker, setTicker] = useState<Noticia[]>([]);
   const [scrolled, setScrolled] = useState(false);
   const router = useRouter();
+  const pathname = usePathname();
   const searchRef = useRef<HTMLInputElement>(null);
+
+  const isActive = (href: string) => {
+    if (href === '/') return pathname === '/';
+    return pathname.startsWith(href);
+  };
 
   useEffect(() => {
     getTickerNoticias().then(setTicker).catch(() => {});
@@ -69,16 +75,13 @@ export default function Header() {
 
           {/* Logo */}
           <Link href="/" className="flex items-center flex-shrink-0 text-slate-900 dark:text-white">
-            <span className="font-black text-2xl leading-none" style={{ fontFamily: 'Georgia, serif' }}>Noti</span>
-            <span
-              className="inline-flex items-center justify-center rounded-full flex-shrink-0"
-              style={{ width: 26, height: 26, backgroundColor: '#1a6fad' }}
-            >
+            <span className="font-heading font-black text-2xl leading-none">Noti</span>
+            <span className="inline-flex items-center justify-center rounded-full flex-shrink-0 bg-accent w-[26px] h-[26px]">
               <svg width="9" height="11" viewBox="0 0 9 11" fill="none">
                 <polygon points="2,1 8,5.5 2,10" fill="white" />
               </svg>
             </span>
-            <span className="font-black text-2xl leading-none" style={{ fontFamily: 'Georgia, serif' }}>Crack</span>
+            <span className="font-heading font-black text-2xl leading-none">Crack</span>
           </Link>
 
           {/* Nav categorías (desktop) */}
@@ -94,15 +97,25 @@ export default function Header() {
               { label: 'Entretenimiento', href: '/seccion/entretenimiento' },
               { label: 'Videos',          href: '/videos' },
               { label: 'Radio',           href: '/#radio' },
-            ].map(item => (
-              <Link
-                key={item.href}
-                href={item.href}
-                className="px-2.5 py-1.5 text-sm font-medium rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 whitespace-nowrap transition-colors"
-              >
-                {item.label}
-              </Link>
-            ))}
+            ].map(item => {
+              const active = isActive(item.href);
+              return (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  className={`relative px-2.5 py-1.5 text-sm font-medium rounded-lg whitespace-nowrap transition-colors
+                    ${active
+                      ? 'text-primary-600 dark:text-primary-400'
+                      : 'hover:bg-slate-100 dark:hover:bg-slate-800'
+                    }`}
+                >
+                  {item.label}
+                  {active && (
+                    <span className="absolute bottom-0 left-2.5 right-2.5 h-0.5 bg-primary-600 dark:bg-primary-400 rounded-full" />
+                  )}
+                </Link>
+              );
+            })}
           </nav>
 
           {/* Actions */}

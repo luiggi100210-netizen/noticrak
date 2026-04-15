@@ -43,8 +43,7 @@ export default function SidebarCard({ noticia, numero }: SidebarCardProps) {
       <div className="flex-1 min-w-0">
         <CategoryBadge categoria={noticia.categoria} className="mb-1 text-[10px]" />
         <h4
-          className="text-sm font-semibold leading-snug line-clamp-3 group-hover:text-primary-600 transition-colors"
-          style={{ fontFamily: 'Georgia, serif' }}
+          className="font-heading text-sm font-semibold leading-snug line-clamp-3 group-hover:text-primary-600 transition-colors"
         >
           {noticia.titulo}
         </h4>

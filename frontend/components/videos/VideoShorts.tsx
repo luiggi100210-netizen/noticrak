@@ -64,8 +64,7 @@ function VideoShortCard({ video }: { video: Video }) {
           </p>
         )}
         <h4
-          className="text-xs font-semibold line-clamp-2 leading-snug group-hover:text-blue-600 transition-colors mb-1"
-          style={{ fontFamily: 'Georgia, serif' }}
+          className="font-heading text-xs font-semibold line-clamp-2 leading-snug group-hover:text-blue-600 transition-colors mb-1"
         >
           {video.titulo}
         </h4>

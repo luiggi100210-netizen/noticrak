@@ -45,7 +45,7 @@ export default function NoticiaCard({ noticia, variant = 'grid', numero }: Notic
               className="w-full h-full flex items-start p-5"
               style={{ backgroundColor: CAT_COLORS[noticia.categoria] ?? '#334155' }}
             >
-              <span className="text-white/60 text-5xl font-black uppercase tracking-widest leading-none" style={{ fontFamily: 'Georgia, serif' }}>
+              <span className="font-heading text-white/60 text-5xl font-black uppercase tracking-widest leading-none">
                 {noticia.categoria}
               </span>
             </div>
@@ -54,8 +54,7 @@ export default function NoticiaCard({ noticia, variant = 'grid', numero }: Notic
           <div className="absolute bottom-0 left-0 right-0 p-5">
             <CategoryBadge categoria={noticia.categoria} className="mb-2" />
             <h2
-              className="text-white font-bold text-2xl lg:text-3xl leading-tight mb-2 group-hover:underline"
-              style={{ fontFamily: 'Georgia, serif' }}
+              className="font-heading text-white font-bold text-2xl lg:text-3xl leading-tight mb-2 group-hover:underline"
             >
               {noticia.titulo}
             </h2>
@@ -88,7 +87,7 @@ export default function NoticiaCard({ noticia, variant = 'grid', numero }: Notic
               className="w-full h-full flex items-start p-4"
               style={{ backgroundColor: CAT_COLORS[noticia.categoria] ?? '#334155' }}
             >
-              <span className="text-white/50 text-4xl font-black uppercase tracking-widest leading-none" style={{ fontFamily: 'Georgia, serif' }}>
+              <span className="font-heading text-white/50 text-4xl font-black uppercase tracking-widest leading-none">
                 {noticia.categoria}
               </span>
             </div>
@@ -97,8 +96,7 @@ export default function NoticiaCard({ noticia, variant = 'grid', numero }: Notic
           <div className="absolute bottom-0 left-0 right-0 p-4">
             <CategoryBadge categoria={noticia.categoria} className="mb-1.5" />
             <h2
-              className="text-white font-bold text-lg lg:text-xl leading-tight mb-1.5 group-hover:underline"
-              style={{ fontFamily: 'Georgia, serif' }}
+              className="font-heading text-white font-bold text-lg lg:text-xl leading-tight mb-1.5 group-hover:underline"
             >
               {noticia.titulo}
             </h2>
@@ -129,8 +127,7 @@ export default function NoticiaCard({ noticia, variant = 'grid', numero }: Notic
         <div className="flex-1 min-w-0">
           <CategoryBadge categoria={noticia.categoria} className="mb-1" />
           <h3
-            className="font-semibold text-sm leading-snug line-clamp-3 group-hover:text-primary-600 transition-colors"
-            style={{ fontFamily: 'Georgia, serif' }}
+            className="font-heading font-semibold text-sm leading-snug line-clamp-3 group-hover:text-primary-600 transition-colors"
           >
             {noticia.titulo}
           </h3>
@@ -154,8 +151,7 @@ export default function NoticiaCard({ noticia, variant = 'grid', numero }: Notic
         <div className="flex-1 min-w-0">
           <CategoryBadge categoria={noticia.categoria} className="mb-1" />
           <h3
-            className="font-semibold text-sm leading-snug line-clamp-2 group-hover:text-primary-600 transition-colors"
-            style={{ fontFamily: 'Georgia, serif' }}
+            className="font-heading font-semibold text-sm leading-snug line-clamp-2 group-hover:text-primary-600 transition-colors"
           >
             {noticia.titulo}
           </h3>
@@ -186,15 +182,14 @@ export default function NoticiaCard({ noticia, variant = 'grid', numero }: Notic
           className="h-44 rounded-lg mb-3 flex items-end p-3"
           style={{ backgroundColor: CAT_COLORS[noticia.categoria] ?? '#334155' }}
         >
-          <span className="text-white/30 text-5xl font-black uppercase leading-none" style={{ fontFamily: 'Georgia, serif' }}>
+          <span className="font-heading text-white/30 text-5xl font-black uppercase leading-none">
             {noticia.categoria.slice(0, 3)}
           </span>
         </div>
       )}
       <CategoryBadge categoria={noticia.categoria} className="mb-2" />
       <h3
-        className="font-semibold leading-snug line-clamp-2 group-hover:text-primary-600 transition-colors mb-2"
-        style={{ fontFamily: 'Georgia, serif' }}
+        className="font-heading font-semibold leading-snug line-clamp-2 group-hover:text-primary-600 transition-colors mb-2"
       >
         {noticia.titulo}
       </h3>

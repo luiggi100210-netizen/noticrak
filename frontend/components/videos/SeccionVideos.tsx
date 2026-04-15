@@ -81,8 +81,7 @@ export default function SeccionVideos({ videos }: SeccionVideosProps) {
           </div>
 
           <h3
-            className="text-xl font-bold leading-snug group-hover:text-primary-600 transition-colors line-clamp-2"
-            style={{ fontFamily: 'Georgia, serif' }}
+            className="font-heading text-xl font-bold leading-snug group-hover:text-primary-600 transition-colors line-clamp-2"
           >
             {principal.titulo}
           </h3>
@@ -129,8 +128,7 @@ export default function SeccionVideos({ videos }: SeccionVideosProps) {
                     </p>
                   )}
                   <h4
-                    className="text-sm font-semibold line-clamp-2 leading-snug group-hover:text-primary-600 transition-colors"
-                    style={{ fontFamily: 'Georgia, serif' }}
+                    className="font-heading text-sm font-semibold line-clamp-2 leading-snug group-hover:text-primary-600 transition-colors"
                   >
                     {video.titulo}
                   </h4>

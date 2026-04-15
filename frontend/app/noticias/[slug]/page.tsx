@@ -104,12 +104,12 @@ export default async function NoticiaPage({ params }: PageProps) {
 
           <CategoryBadge categoria={noticia.categoria} className="mb-3" />
 
-          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-black leading-tight mb-4 text-slate-900 dark:text-white" style={{ fontFamily: 'Georgia, serif' }}>
+          <h1 className="font-heading text-3xl sm:text-4xl lg:text-5xl font-black leading-tight mb-4 text-slate-900 dark:text-white">
             {noticia.titulo}
           </h1>
 
           {noticia.resumen && (
-            <p className="text-xl text-slate-600 dark:text-slate-300 border-l-4 border-primary-600 pl-4 mb-5 leading-relaxed font-light" style={{ fontFamily: 'Georgia, serif' }}>
+            <p className="font-heading text-xl text-slate-600 dark:text-slate-300 border-l-4 border-primary-600 pl-4 mb-5 leading-relaxed font-light">
               {noticia.resumen}
             </p>
           )}
@@ -160,8 +160,7 @@ export default async function NoticiaPage({ params }: PageProps) {
 
           {/* Cuerpo del artículo */}
           <div
-            className="articulo-cuerpo"
-            style={{ fontFamily: 'Georgia, serif' }}
+            className="font-heading articulo-cuerpo"
             dangerouslySetInnerHTML={{ __html: sanitizeHtml(noticia.contenido || '', SANITIZE_OPTIONS) }}
           />
 

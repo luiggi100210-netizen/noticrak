@@ -11,16 +11,25 @@ const config: Config = {
     extend: {
       colors: {
         primary: {
-          50: '#fff1f2',
+          50:  '#fff1f2',
           100: '#ffe4e6',
+          200: '#fecdd3',
+          300: '#fda4af',
+          400: '#fb7185',
           500: '#e11d48',
           600: '#be123c',
           700: '#9f1239',
-          900: '#881337',
+          800: '#881337',
+          900: '#4c0519',
+        },
+        accent: {
+          light:   '#4b9fd4',
+          DEFAULT: '#1a6fad',
+          dark:    '#14578a',
         },
       },
       fontFamily: {
-        sans: ['Inter', 'sans-serif'],
+        sans:    ['Inter', 'sans-serif'],
         heading: ['Merriweather', 'serif'],
       },
     },
