@@ -8,8 +8,11 @@ const router = express.Router();
 
 // URL del script PHP en cPanel
 // Usar IP directa porque www.noticrack.com apunta a Vercel (no al cPanel)
-const CPANEL_UPLOAD_URL = process.env.CPANEL_UPLOAD_URL || 'http://198.58.106.39/~noticrac/upload.php';
-const CPANEL_UPLOAD_TOKEN = process.env.CPANEL_UPLOAD_TOKEN || 'noticrack_upload_2024_secret';
+const CPANEL_UPLOAD_URL = process.env.CPANEL_UPLOAD_URL;
+const CPANEL_UPLOAD_TOKEN = process.env.CPANEL_UPLOAD_TOKEN;
+if (!CPANEL_UPLOAD_URL || !CPANEL_UPLOAD_TOKEN) {
+  console.warn('[upload] CPANEL_UPLOAD_URL o CPANEL_UPLOAD_TOKEN no configurados — uploads desactivados');
+}
 
 // Multer: almacena en memoria
 const upload = multer({

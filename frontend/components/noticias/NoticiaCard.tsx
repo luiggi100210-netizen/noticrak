@@ -198,7 +198,7 @@ export default function NoticiaCard({ noticia, variant = 'grid', numero }: Notic
         {noticia.autor_nombre && <span>·</span>}
         <span>{tiempoRelativo}</span>
         <span>·</span>
-        <span>{noticia.vistas.toLocaleString()} vistas</span>
+        <span>{(noticia.vistas ?? 0).toLocaleString()} vistas</span>
       </div>
     </Link>
   );

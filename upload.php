@@ -76,7 +76,7 @@ if (!in_array($carpeta, ['noticias', 'videos', 'avatares'])) $carpeta = 'noticia
 $uploadBase = __DIR__ . '/uploads/' . $carpeta . '/' . date('Y/m');
 if (!is_dir($uploadBase)) {
     if (!mkdir($uploadBase, 0755, true)) {
-        http_response_code(500); echo json_encode(['error' => 'No se pudo crear directorio', 'dir' => $uploadBase]); exit;
+        http_response_code(500); echo json_encode(['error' => 'No se pudo crear directorio']); exit;
     }
 }
 
@@ -85,7 +85,7 @@ $filename = $carpeta . '/' . date('Y/m') . '/' . uniqid('img_', true) . '.' . $e
 $fullPath = __DIR__ . '/uploads/' . $filename;
 
 if (!move_uploaded_file($file['tmp_name'], $fullPath)) {
-    http_response_code(500); echo json_encode(['error' => 'Error al guardar la imagen', 'path' => $fullPath]); exit;
+    http_response_code(500); echo json_encode(['error' => 'Error al guardar la imagen']); exit;
 }
 
 // Servir desde IP directa del cPanel (www.noticrack.com apunta a Vercel)

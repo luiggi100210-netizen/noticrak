@@ -76,10 +76,6 @@ export const getTickerNoticias = async (): Promise<Noticia[]> => {
   return data;
 };
 
-export const getVideos = async (): Promise<Noticia[]> => {
-  const { data } = await api.get('/noticias/videos');
-  return data;
-};
 
 export interface Video {
   id: number;
@@ -129,10 +125,6 @@ export const getVideosApi = async (params?: {
   return data;
 };
 
-export const getRadioAhora = async (): Promise<RadioAhoraResponse> => {
-  const { data } = await api.get('/radio/ahora');
-  return data;
-};
 
 export const getRadioProgramas = async (): Promise<RadioPrograma[]> => {
   const { data } = await api.get('/radio/programas');
