@@ -1,6 +1,8 @@
-export const dynamic = 'force-dynamic';
+// Revalidación incremental: la portada se regenera cada 60s en lugar de
+// golpear la API en cada request. Acelera LCP y reduce carga en Render.
+export const revalidate = 60;
 
-import { getPortada, getVideosApi, API_URL } from '../lib/api';
+import { API_URL, type PortadaResponse, type VideosResponse } from '../lib/api';
 import RadioPlayer from '../components/radio/RadioPlayer';
 import NoticiaHero from '../components/noticias/NoticiaHero';
 import SeccionNoticias from '../components/noticias/SeccionNoticias';
@@ -10,19 +12,30 @@ import CambioWidget from '../components/widgets/CambioWidget';
 import TendenciasWidget from '../components/widgets/TendenciasWidget';
 import SeccionVideos from '../components/videos/SeccionVideos';
 
-const PORTADA_VACIA = {
+const PORTADA_VACIA: PortadaResponse = {
   cusco: [], politica: [], nacional: [], economia: [],
   deportes: [], internacional: [], tecnologia: [],
   entretenimiento: [], destacada: null,
 };
 
+const VIDEOS_VACIOS: VideosResponse = { videos: [], total: 0, pagina: 1, totalPaginas: 1 };
+
+// Fetch nativo de Next.js para que revalidate funcione (axios no participa del cache)
+async function fetchJson<T>(path: string, fallback: T, revalidateSec = 60): Promise<T> {
+  try {
+    const res = await fetch(`${API_URL}${path}`, { next: { revalidate: revalidateSec } });
+    if (!res.ok) return fallback;
+    return await res.json() as T;
+  } catch {
+    return fallback;
+  }
+}
+
 export default async function HomePage() {
   const [portada, radioRes, videosRes] = await Promise.all([
-    getPortada().catch(() => PORTADA_VACIA),
-    fetch(`${API_URL}/radio/ahora`, { cache: 'no-store' })
-      .then(r => r.json())
-      .catch(() => ({ ok: true, data: null })),
-    getVideosApi({ limite: 4 }).catch(() => ({ videos: [], total: 0, pagina: 1, totalPaginas: 1 })),
+    fetchJson<PortadaResponse>('/noticias/portada', PORTADA_VACIA, 60),
+    fetchJson<{ ok?: boolean; data: unknown }>('/radio/ahora', { ok: true, data: null }, 30),
+    fetchJson<VideosResponse>('/videos?limite=4', VIDEOS_VACIOS, 120),
   ]);
 
   const radioData = radioRes?.data ?? null;

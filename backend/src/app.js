@@ -3,7 +3,18 @@ const express = require('express');
 const cors = require('cors');
 const rateLimit = require('express-rate-limit');
 
+// ── Validar variables de entorno críticas al arrancar ─────────────────────────
+const requiredEnv = ['JWT_SECRET', 'DATABASE_URL'];
+const missingEnv = requiredEnv.filter(name => !process.env[name]);
+if (missingEnv.length > 0) {
+  console.error(`❌ Faltan variables de entorno: ${missingEnv.join(', ')}`);
+  process.exit(1);
+}
+
 const app = express();
+
+// Confiar en el proxy de Render/Vercel/cPanel para leer X-Forwarded-For correctamente
+app.set('trust proxy', 1);
 
 // ── Rate limiting ─────────────────────────────────────────────────────────────
 const globalLimiter = rateLimit({

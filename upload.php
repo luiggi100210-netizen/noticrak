@@ -7,14 +7,27 @@ header('Content-Type: application/json');
 
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') { http_response_code(200); exit; }
 
-define('UPLOAD_TOKEN', 'noticrack_upload_2024_secret');
+// Cargar token desde variable de entorno (configurar en cPanel: SetEnv UPLOAD_TOKEN ...)
+// o desde archivo .env hermano (no commiteado).
+$uploadToken = getenv('UPLOAD_TOKEN') ?: ($_SERVER['UPLOAD_TOKEN'] ?? '');
+if (!$uploadToken && is_readable(__DIR__ . '/.env')) {
+    foreach (file(__DIR__ . '/.env', FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES) as $line) {
+        if (strpos(trim($line), 'UPLOAD_TOKEN=') === 0) {
+            $uploadToken = trim(substr(trim($line), strlen('UPLOAD_TOKEN=')), "\"'");
+            break;
+        }
+    }
+}
+if (!$uploadToken) {
+    http_response_code(500); echo json_encode(['error' => 'Servidor mal configurado']); exit;
+}
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     http_response_code(405); echo json_encode(['error' => 'Metodo no permitido']); exit;
 }
 
 $token = $_SERVER['HTTP_X_UPLOAD_TOKEN'] ?? '';
-if ($token !== UPLOAD_TOKEN) {
+if (!hash_equals($uploadToken, $token)) {
     http_response_code(401); echo json_encode(['error' => 'No autorizado']); exit;
 }
 
