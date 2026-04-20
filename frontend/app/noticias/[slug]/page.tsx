@@ -1,4 +1,6 @@
-export const dynamic = 'force-dynamic';
+// ISR: cada noticia se regenera cada 5 min; suficientemente fresco para un portal
+// y mantiene Core Web Vitals altos (sin round-trip a la API en cada request).
+export const revalidate = 300;
 
 import { notFound } from 'next/navigation';
 import Image from 'next/image';
@@ -40,18 +42,37 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   try {
     const { slug } = await params;
     const { noticia } = await getNoticiaBySlug(slug);
+    const description = noticia.resumen || noticia.titulo;
+    const imageUrl = noticia.imagen_url;
+    const canonicalPath = `/noticias/${noticia.slug}`;
+
     return {
       title: noticia.titulo,
-      description: noticia.resumen || noticia.titulo,
+      description,
+      alternates: { canonical: canonicalPath },
       openGraph: {
-        title: noticia.titulo,
-        description: noticia.resumen,
-        images: noticia.imagen_url ? [{ url: noticia.imagen_url, alt: noticia.titulo }] : [],
         type: 'article',
+        title: noticia.titulo,
+        description,
+        url: canonicalPath,
+        siteName: 'NotiCrack',
+        locale: 'es_PE',
+        publishedTime: noticia.fecha_publicacion,
+        modifiedTime: noticia.fecha_publicacion,
+        section: getCategoriaLabel(noticia.categoria),
+        tags: noticia.tags,
+        authors: noticia.autor_nombre ? [noticia.autor_nombre] : undefined,
+        images: imageUrl ? [{ url: imageUrl, width: 1200, height: 630, alt: noticia.titulo }] : [],
+      },
+      twitter: {
+        card: 'summary_large_image',
+        title: noticia.titulo,
+        description,
+        images: imageUrl ? [imageUrl] : undefined,
       },
     };
   } catch {
-    return { title: 'Noticia no encontrada' };
+    return { title: 'Noticia no encontrada', robots: { index: false, follow: false } };
   }
 }
 
@@ -82,6 +103,30 @@ export default async function NoticiaPage({ params }: PageProps) {
 
   const { noticia, relacionadas } = data;
 
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://noticrack.pe';
+  const articleUrl = `${siteUrl}/noticias/${noticia.slug}`;
+  const articleSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'NewsArticle',
+    headline: noticia.titulo,
+    description: noticia.resumen || noticia.titulo,
+    image: noticia.imagen_url ? [noticia.imagen_url] : undefined,
+    datePublished: noticia.fecha_publicacion,
+    dateModified: noticia.fecha_publicacion,
+    articleSection: getCategoriaLabel(noticia.categoria),
+    keywords: noticia.tags?.join(', '),
+    url: articleUrl,
+    mainEntityOfPage: { '@type': 'WebPage', '@id': articleUrl },
+    author: noticia.autor_nombre
+      ? { '@type': 'Person', name: noticia.autor_nombre }
+      : { '@type': 'Organization', name: 'Redacción NotiCrack' },
+    publisher: {
+      '@type': 'Organization',
+      name: 'NotiCrack',
+      logo: { '@type': 'ImageObject', url: `${siteUrl}/logo.png` },
+    },
+  };
+
   // Noticias de la misma categoría para "Puedes interesar"
   const puedesInteresar = relacionadas.length > 0
     ? relacionadas.slice(0, 6)
@@ -96,6 +141,10 @@ export default async function NoticiaPage({ params }: PageProps) {
 
   return (
     <div className="max-w-7xl mx-auto px-4 py-6">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(articleSchema) }}
+      />
       <VistaCounter noticiaId={noticia.id} />
 
       {/* Breadcrumb */}

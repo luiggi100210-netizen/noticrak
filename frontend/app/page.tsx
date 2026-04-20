@@ -3,6 +3,18 @@
 export const revalidate = 60;
 
 import { API_URL, type PortadaResponse, type VideosResponse } from '../lib/api';
+
+interface RadioConfig {
+  activo:      boolean;
+  stream_url:  string;
+  nombre:      string;
+  descripcion: string;
+}
+
+interface RadioAhoraResponse {
+  ok?: boolean;
+  data: RadioConfig | null;
+}
 import RadioPlayer from '../components/radio/RadioPlayer';
 import NoticiaHero from '../components/noticias/NoticiaHero';
 import SeccionNoticias from '../components/noticias/SeccionNoticias';
@@ -34,7 +46,7 @@ async function fetchJson<T>(path: string, fallback: T, revalidateSec = 60): Prom
 export default async function HomePage() {
   const [portada, radioRes, videosRes] = await Promise.all([
     fetchJson<PortadaResponse>('/noticias/portada', PORTADA_VACIA, 60),
-    fetchJson<{ ok?: boolean; data: unknown }>('/radio/ahora', { ok: true, data: null }, 30),
+    fetchJson<RadioAhoraResponse>('/radio/ahora', { ok: true, data: null }, 30),
     fetchJson<VideosResponse>('/videos?limite=4', VIDEOS_VACIOS, 120),
   ]);
 
