@@ -1,0 +1,77 @@
+name: Deploy Admin to cPanel
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Builda el admin SPA (Vite + React) y lo sube al hosting de cPanel vía FTP/FTPS.
+# Se dispara automáticamente cuando cambia cualquier cosa dentro de admin/
+# o manualmente desde la pestaña "Actions" en GitHub.
+# ─────────────────────────────────────────────────────────────────────────────
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'admin/**'
+      - '.github/workflows/deploy-admin.yml'
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    name: Build + FTP Deploy
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout código
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: admin/package-lock.json
+
+      - name: Instalar dependencias
+        working-directory: admin
+        run: npm ci
+
+      - name: Build de producción
+        working-directory: admin
+        env:
+          # URL del backend en Render. Si no se define, usa el valor por defecto.
+          VITE_API_URL: ${{ secrets.VITE_API_URL }}
+        run: npm run build
+
+      - name: Verificar que dist/ existe
+        run: |
+          if [ ! -d "admin/dist" ]; then
+            echo "❌ No se encontró admin/dist — el build falló."
+            exit 1
+          fi
+          echo "✅ Build OK. Archivos listos para subir:"
+          ls -la admin/dist/
+          du -sh admin/dist/
+
+      - name: Deploy al hosting (FTP/FTPS)
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        with:
+          server:    ${{ secrets.ADMIN_FTP_SERVER }}
+          username:  ${{ secrets.ADMIN_FTP_USERNAME }}
+          password:  ${{ secrets.ADMIN_FTP_PASSWORD }}
+          protocol:  ${{ secrets.ADMIN_FTP_PROTOCOL }}   # ftp | ftps | sftp
+          port:      ${{ secrets.ADMIN_FTP_PORT }}       # 21 (ftp/ftps) o 22 (sftp)
+          local-dir: ./admin/dist/
+          server-dir: ${{ secrets.ADMIN_FTP_SERVER_DIR }}  # ej: /public_html/admin/
+          # Con false solo sube archivos que cambiaron (más rápido y seguro)
+          dangerous-clean-slate: false
+          # Excluye archivos que no deben viajar al servidor
+          exclude: |
+            **/.git*
+            **/.git*/**
+            **/node_modules/**
+            **/.DS_Store
+
+      - name: Resumen
+        if: success()
+        run: |
+          echo "🚀 Admin desplegado correctamente en cPanel."
+          echo "Si no ves los cambios, haz Ctrl+F5 para forzar recarga."
