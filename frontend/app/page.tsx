@@ -69,10 +69,18 @@ export default async function HomePage() {
   const bloque3 = economia.length > 0 || deportes.length > 0 || internacional.length > 0;
   const bloque4 = tecnologia.length > 0 || entretenim.length > 0;
 
+  // Noticias para la barra de última hora (mezcla de categorías recientes)
+  const ultimaHora = [
+    ...(portada.destacada ? [portada.destacada] : []),
+    ...portada.cusco,
+    ...portada.nacional,
+    ...portada.politica,
+  ].slice(0, 8);
+
   return (
     <main>
       {/* ── ÚLTIMA HORA BAR ───────────────────────────── */}
-      <UltimaHoraBar />
+      <UltimaHoraBar noticias={ultimaHora} />
 
       {/* ── HERO ──────────────────────────────────────── */}
       <div className="max-w-7xl mx-auto px-4 pt-6">
