@@ -5,7 +5,6 @@ import RadioPlayer from '../components/radio/RadioPlayer';
 import NoticiaHero from '../components/noticias/NoticiaHero';
 import SeccionNoticias from '../components/noticias/SeccionNoticias';
 import GrillaCategoria from '../components/noticias/GrillaCategoria';
-import UltimaHoraBar from '../components/noticias/UltimaHoraBar';
 import ClimaWidget from '../components/widgets/ClimaWidget';
 import CambioWidget from '../components/widgets/CambioWidget';
 import TendenciasWidget from '../components/widgets/TendenciasWidget';
@@ -43,19 +42,8 @@ export default async function HomePage() {
   const bloque3 = portada.economia.length > 0 || portada.deportes.length > 0 || portada.internacional.length > 0;
   const bloque4 = portada.tecnologia.length > 0 || portada.entretenimiento.length > 0;
 
-  // Noticias para la barra de última hora
-  const ultimaHora = [
-    ...(portada.destacada ? [portada.destacada] : []),
-    ...portada.cusco,
-    ...portada.nacional,
-    ...portada.politica,
-  ].slice(0, 8);
-
   return (
     <main>
-      {/* ── ÚLTIMA HORA BAR ───────────────────────────── */}
-      <UltimaHoraBar noticias={ultimaHora} />
-
       {/* ── HERO ──────────────────────────────────────── */}
       <div className="max-w-7xl mx-auto px-4 pt-6">
         {portada.destacada ? (
