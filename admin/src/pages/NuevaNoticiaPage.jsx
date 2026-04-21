@@ -24,14 +24,36 @@ const FORM_INICIAL = {
 export default function NuevaNoticiaPage({ noticiaInicial, modoEdicion = false, noticiaId }) {
   const navigate  = useNavigate();
   const usuario   = JSON.parse(localStorage.getItem('usuario') || '{}');
+  const esAdmin   = usuario?.rol === 'admin';
 
-  const [form, setForm]         = useState(noticiaInicial || { ...FORM_INICIAL, autor: usuario?.nombre || '' });
+  const [form, setForm]         = useState(
+    noticiaInicial
+      ? { ...noticiaInicial, autor_id: noticiaInicial.autor_id ?? usuario?.id ?? '' }
+      : { ...FORM_INICIAL, autor: usuario?.nombre || '', autor_id: usuario?.id || '' }
+  );
   const [preview, setPreview]   = useState(noticiaInicial?.imagen_url || '');
   const [subiendo, setSubiendo] = useState(false);
   const [galeriaSubiendo, setGaleriaSubiendo] = useState(false);
   const [guardando, setGuardando] = useState(false);
   const [error, setError]       = useState('');
   const [exito, setExito]       = useState('');
+
+  // Lista de periodistas disponibles (solo admins pueden reasignar autor)
+  const [periodistas, setPeriodistas] = useState([]);
+
+  useEffect(() => {
+    if (!esAdmin) return;
+    api.get('/auth/usuarios')
+      .then(({ data }) => {
+        // Solo usuarios activos pueden ser autores
+        const activos = (data || []).filter(u => u.activo);
+        setPeriodistas(activos);
+      })
+      .catch(() => {
+        // Si falla, al menos dejamos al usuario actual como opción
+        setPeriodistas([{ id: usuario.id, nombre: usuario.nombre, rol: usuario.rol }]);
+      });
+  }, [esAdmin]);
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -102,16 +124,21 @@ export default function NuevaNoticiaPage({ noticiaInicial, modoEdicion = false, 
 
     const payload = {
       titulo:      form.titulo.trim(),
-      subtitulo:   form.subtitulo.trim() || undefined,
+      subtitulo:   form.subtitulo?.trim() || undefined,
       cuerpo:      form.cuerpo.trim(),
       categoria_id: parseInt(form.categoria_id),
       imagen_url:  form.imagen_url || undefined,
       imagenes:    form.imagenes || [],
-      tags:        form.tags ? form.tags.split(',').map(t => t.trim()).filter(Boolean) : [],
-      fuente:      form.fuente.trim() || undefined,
+      tags:        form.tags ? String(form.tags).split(',').map(t => t.trim()).filter(Boolean) : [],
+      fuente:      form.fuente?.trim() || undefined,
       destacada:   form.destacada,
       estado,
     };
+
+    // Solo los admins pueden asignar el autor; el backend ignora este campo si no eres admin
+    if (esAdmin && form.autor_id) {
+      payload.autor_id = Number(form.autor_id);
+    }
 
     try {
       if (modoEdicion) {
@@ -266,8 +293,34 @@ export default function NuevaNoticiaPage({ noticiaInicial, modoEdicion = false, 
 
           {/* Autor */}
           <div className="form-group">
-            <label>Autor</label>
-            <input type="text" name="autor" value={form.autor || usuario?.nombre || ''} readOnly className="input-readonly" />
+            <label>Autor {esAdmin && <span className="required">*</span>}</label>
+            {esAdmin ? (
+              <>
+                <select
+                  name="autor_id"
+                  value={form.autor_id || ''}
+                  onChange={handleChange}
+                >
+                  <option value="">— Selecciona un autor —</option>
+                  {periodistas.map(p => (
+                    <option key={p.id} value={p.id}>
+                      {p.nombre} {p.rol === 'admin' ? '(admin)' : ''}
+                      {p.id === usuario.id ? ' — tú' : ''}
+                    </option>
+                  ))}
+                </select>
+                <small style={{ color: '#888', fontSize: 12, marginTop: 4, display: 'block' }}>
+                  Como admin, puedes publicar a nombre de cualquier periodista.
+                </small>
+              </>
+            ) : (
+              <input
+                type="text"
+                value={usuario?.nombre || ''}
+                readOnly
+                className="input-readonly"
+              />
+            )}
           </div>
 
           {/* Tipo */}

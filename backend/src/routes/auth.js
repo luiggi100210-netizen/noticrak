@@ -143,9 +143,117 @@ router.put('/password', verificarToken, async (req, res) => {
 router.get('/usuarios', soloAdmin, async (req, res) => {
   try {
     const usuarios = await Usuario.getAll();
-    res.json(usuarios);
+    // Enriquecer con count de noticias por autor (útil para la UI de eliminar)
+    const conCount = await Promise.all(
+      usuarios.map(async u => ({
+        ...u,
+        noticias_count: await Usuario.countNoticias(u.id),
+      }))
+    );
+    res.json(conCount);
   } catch (err) {
     console.error('GET /auth/usuarios:', err.message);
+    res.status(500).json({ error: 'Error del servidor' });
+  }
+});
+
+// ── PUT /api/auth/usuarios/:id (solo admin) ───────────────────────────────────
+// Actualiza nombre, email, rol, activo. Password se cambia aparte.
+router.put('/usuarios/:id', soloAdmin, async (req, res) => {
+  const id = Number(req.params.id);
+  if (!Number.isInteger(id) || id <= 0) {
+    return res.status(400).json({ error: 'ID inválido' });
+  }
+
+  const { nombre, email, rol, activo, password } = req.body;
+
+  // Validaciones
+  if (rol !== undefined && !['periodista', 'admin'].includes(rol)) {
+    return res.status(400).json({ error: 'Rol inválido. Use: periodista | admin' });
+  }
+
+  try {
+    const existente = await Usuario.getById(id);
+    if (!existente) {
+      return res.status(404).json({ error: 'Usuario no encontrado' });
+    }
+
+    // No permitir que el último admin activo se degrade o desactive a sí mismo
+    const esSelf = req.usuario?.id === id;
+    const degradandose = rol !== undefined && rol !== 'admin' && existente.rol === 'admin';
+    const desactivandose = activo === false && existente.activo === true && existente.rol === 'admin';
+
+    if (esSelf && (degradandose || desactivandose)) {
+      return res.status(400).json({ error: 'No puedes cambiar tu propio rol ni desactivarte' });
+    }
+
+    if ((degradandose || desactivandose) && !esSelf) {
+      const adminsActivos = await Usuario.countAdminsActivos();
+      if (adminsActivos <= 1) {
+        return res.status(400).json({ error: 'Debe quedar al menos un admin activo' });
+      }
+    }
+
+    // Si se cambia email, validar que no esté en uso por otro usuario
+    if (email && email.toLowerCase().trim() !== existente.email) {
+      const conflicto = await Usuario.getByEmail(email);
+      if (conflicto && conflicto.id !== id) {
+        return res.status(409).json({ error: 'Ese email ya está en uso' });
+      }
+    }
+
+    const actualizado = await Usuario.update(id, { nombre, email, rol, activo });
+
+    // Cambio de password opcional en el mismo request
+    if (password && String(password).length >= 8) {
+      const hash = await bcrypt.hash(password, 10);
+      await Usuario.updatePassword(id, hash);
+    } else if (password) {
+      return res.status(400).json({ error: 'La contraseña debe tener al menos 8 caracteres' });
+    }
+
+    res.json(actualizado);
+  } catch (err) {
+    console.error('PUT /auth/usuarios/:id:', err.message);
+    res.status(500).json({ error: 'Error del servidor' });
+  }
+});
+
+// ── DELETE /api/auth/usuarios/:id (solo admin) ────────────────────────────────
+// Las noticias del autor quedan con autor_id = NULL (FK ON DELETE SET NULL).
+router.delete('/usuarios/:id', soloAdmin, async (req, res) => {
+  const id = Number(req.params.id);
+  if (!Number.isInteger(id) || id <= 0) {
+    return res.status(400).json({ error: 'ID inválido' });
+  }
+
+  // No permitir auto-borrado
+  if (req.usuario?.id === id) {
+    return res.status(400).json({ error: 'No puedes eliminarte a ti mismo' });
+  }
+
+  try {
+    const existente = await Usuario.getById(id);
+    if (!existente) {
+      return res.status(404).json({ error: 'Usuario no encontrado' });
+    }
+
+    // Proteger al último admin activo
+    if (existente.rol === 'admin' && existente.activo) {
+      const adminsActivos = await Usuario.countAdminsActivos();
+      if (adminsActivos <= 1) {
+        return res.status(400).json({ error: 'Debe quedar al menos un admin activo' });
+      }
+    }
+
+    const borrado = await Usuario.remove(id);
+    if (!borrado) {
+      return res.status(404).json({ error: 'Usuario no encontrado' });
+    }
+
+    res.json({ ok: true, mensaje: 'Usuario eliminado. Sus noticias quedaron sin autor asignado.' });
+  } catch (err) {
+    console.error('DELETE /auth/usuarios/:id:', err.message);
     res.status(500).json({ error: 'Error del servidor' });
   }
 });

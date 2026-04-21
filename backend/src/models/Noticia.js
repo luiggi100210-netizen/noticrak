@@ -172,7 +172,7 @@ const Noticia = {
   },
 
   /** Actualiza una noticia existente */
-  async update(id, { titulo, subtitulo, cuerpo, categoria_id, imagen_url, estado, destacada, tags, fuente, imagenes }) {
+  async update(id, { titulo, subtitulo, cuerpo, categoria_id, autor_id, imagen_url, estado, destacada, tags, fuente, imagenes }) {
     // Recalcula slug solo si cambia el título
     let slugUpdate = '';
     const params = [];
@@ -189,6 +189,7 @@ const Noticia = {
     if (subtitulo !== undefined)  { sets.push(`subtitulo = $${idx++}`);   params.push(subtitulo); }
     if (cuerpo !== undefined)     { sets.push(`cuerpo = $${idx++}`);      params.push(cuerpo); }
     if (categoria_id !== undefined){ sets.push(`categoria_id = $${idx++}`); params.push(categoria_id); }
+    if (autor_id !== undefined)   { sets.push(`autor_id = $${idx++}`);    params.push(autor_id); }
     if (imagen_url !== undefined) { sets.push(`imagen_url = $${idx++}`);  params.push(imagen_url); }
     if (destacada !== undefined)  { sets.push(`destacada = $${idx++}`);   params.push(destacada); }
     if (tags !== undefined)       { sets.push(`tags = $${idx++}`);        params.push(tags); }

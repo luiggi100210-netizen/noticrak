@@ -530,6 +530,160 @@ textarea { resize: vertical; min-height: 120px; }
   100% { background-position: -200% 0; }
 }
 
+/* ── Acciones en fila (botones de tabla) ───────────────────── */
+.acciones-row {
+  display: inline-flex;
+  gap: 4px;
+  align-items: center;
+}
+
+.btn-icon-danger {
+  color: var(--danger, #dc2626);
+}
+.btn-icon-danger:hover:not(:disabled) {
+  background: #fef2f2;
+}
+.btn-icon:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+/* ── Botón peligroso (eliminar definitivo) ─────────────────── */
+.btn-danger {
+  background: #dc2626;
+  color: #fff;
+}
+.btn-danger:hover:not(:disabled) {
+  background: #b91c1c;
+}
+.btn-danger:disabled {
+  background: #fca5a5;
+  cursor: not-allowed;
+}
+
+/* ── Checkbox inline con label ─────────────────────────────── */
+.checkbox-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  user-select: none;
+  padding: 8px 0;
+  font-size: 14px;
+  color: var(--text);
+}
+.checkbox-label input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  cursor: pointer;
+}
+.checkbox-label input[type="checkbox"]:disabled {
+  cursor: not-allowed;
+}
+
+/* ── Avatar mini para filas de usuario ─────────────────────── */
+.user-row {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+.user-avatar-sm {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #64748b, #334155);
+  color: #fff;
+  font-weight: 700;
+  font-size: 13px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+/* ── Modal (backdrop + card) ───────────────────────────────── */
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.55);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 16px;
+  animation: modal-fade-in 0.15s ease-out;
+}
+
+.modal-card {
+  background: var(--surface, #fff);
+  border-radius: var(--radius, 10px);
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.25);
+  width: 100%;
+  max-width: 560px;
+  max-height: 90vh;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  animation: modal-pop-in 0.18s ease-out;
+}
+
+.modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--border);
+  background: #f8fafc;
+}
+.modal-header h3 {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.modal-body {
+  padding: 20px;
+  overflow-y: auto;
+  flex: 1;
+}
+.modal-body p { margin: 0 0 8px; font-size: 14px; color: var(--text); }
+.modal-body code {
+  background: #f1f5f9;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 12.5px;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+}
+
+.modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  padding: 14px 20px;
+  border-top: 1px solid var(--border);
+  background: #f8fafc;
+}
+
+@keyframes modal-fade-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+@keyframes modal-pop-in {
+  from { opacity: 0; transform: translateY(8px) scale(0.98); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+/* ── Badges de rol ─────────────────────────────────────────── */
+.badge-admin {
+  background: #fef3c7;
+  color: #92400e;
+}
+.badge-periodista {
+  background: #dbeafe;
+  color: #1e40af;
+}
+
 /* ── Responsive ────────────────────────────────────────────── */
 @media (max-width: 1024px) {
   .form-layout { grid-template-columns: 1fr; }
@@ -545,4 +699,7 @@ textarea { resize: vertical; min-height: 120px; }
   .stats-grid   { grid-template-columns: repeat(2, 1fr); }
   .page-header  { flex-direction: column; }
   .filtros-bar select { min-width: 140px; }
+  .modal-card   { max-width: 100%; }
+  .modal-footer { flex-direction: column-reverse; }
+  .modal-footer .btn { width: 100%; }
 }

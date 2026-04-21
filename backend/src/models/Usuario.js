@@ -77,6 +77,95 @@ const Usuario = {
     );
     return rows;
   },
+
+  /**
+   * Actualiza campos de un usuario.
+   * Solo actualiza los campos recibidos (patch parcial).
+   * NO actualiza password (usar updatePassword).
+   * Si se recibe email, valida unicidad contra otros usuarios.
+   * @param {number} id
+   * @param {{ nombre?, email?, rol?, activo? }} cambios
+   * @returns {object|null}
+   */
+  async update(id, cambios) {
+    const campos = [];
+    const valores = [];
+    let idx = 1;
+
+    if (cambios.nombre !== undefined) {
+      campos.push(`nombre = $${idx++}`);
+      valores.push(String(cambios.nombre).trim());
+    }
+    if (cambios.email !== undefined) {
+      campos.push(`email = $${idx++}`);
+      valores.push(String(cambios.email).toLowerCase().trim());
+    }
+    if (cambios.rol !== undefined) {
+      campos.push(`rol = $${idx++}`);
+      valores.push(cambios.rol);
+    }
+    if (cambios.activo !== undefined) {
+      campos.push(`activo = $${idx++}`);
+      valores.push(!!cambios.activo);
+    }
+
+    if (campos.length === 0) return this.getById(id);
+
+    valores.push(id);
+    const { rows } = await pool.query(
+      `UPDATE usuarios
+       SET ${campos.join(', ')}
+       WHERE id = $${idx}
+       RETURNING id, nombre, email, rol, activo, created_at`,
+      valores
+    );
+    return rows[0] || null;
+  },
+
+  /**
+   * Cuenta cuántas noticias tiene asignadas un usuario como autor.
+   * Útil antes de eliminar para advertir o bloquear.
+   * @param {number} id
+   * @returns {number}
+   */
+  async countNoticias(id) {
+    const { rows } = await pool.query(
+      `SELECT COUNT(*)::int AS total
+       FROM noticias
+       WHERE autor_id = $1`,
+      [id]
+    );
+    return rows[0]?.total ?? 0;
+  },
+
+  /**
+   * Cuenta admins activos. Útil para prevenir que el último admin
+   * se borre a sí mismo y deje el sistema sin acceso.
+   * @returns {number}
+   */
+  async countAdminsActivos() {
+    const { rows } = await pool.query(
+      `SELECT COUNT(*)::int AS total
+       FROM usuarios
+       WHERE rol = 'admin' AND activo = true`
+    );
+    return rows[0]?.total ?? 0;
+  },
+
+  /**
+   * Elimina un usuario por ID.
+   * Las noticias con autor_id apuntando a este usuario quedan con
+   * autor_id = NULL gracias al LEFT JOIN del SELECT.
+   * @param {number} id
+   * @returns {boolean} true si se borró alguna fila
+   */
+  async remove(id) {
+    const { rowCount } = await pool.query(
+      `DELETE FROM usuarios WHERE id = $1`,
+      [id]
+    );
+    return rowCount > 0;
+  },
 };
 
 module.exports = Usuario;

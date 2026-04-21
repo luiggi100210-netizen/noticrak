@@ -106,16 +106,21 @@ router.get('/:slug', async (req, res) => {
 
 // ── POST /api/noticias ────────────────────────────────────────────────────────
 router.post('/', verificarToken, async (req, res) => {
-  const { titulo, subtitulo, cuerpo, categoria_id, imagen_url, imagenes, estado, destacada, tags, fuente } = req.body;
+  const { titulo, subtitulo, cuerpo, categoria_id, imagen_url, imagenes, estado, destacada, tags, fuente, autor_id } = req.body;
 
   if (!titulo || !cuerpo) {
     return res.status(400).json({ error: 'Título y cuerpo son requeridos' });
   }
 
+  // Solo los admins pueden asignar un autor distinto al propio.
+  // Los periodistas solo pueden publicar bajo su propio nombre.
+  const esAdmin = req.usuario.rol === 'admin';
+  const autorFinal = esAdmin && autor_id ? Number(autor_id) : req.usuario.id;
+
   try {
     const noticia = await Noticia.create({
       titulo, subtitulo, cuerpo, categoria_id,
-      autor_id: req.usuario.id,
+      autor_id: autorFinal,
       imagen_url, imagenes, estado, destacada, tags, fuente,
     });
     res.status(201).json(noticia);
@@ -140,7 +145,11 @@ router.put('/:id', verificarToken, async (req, res) => {
       return res.status(403).json({ error: 'No tienes permiso para editar esta noticia' });
     }
 
-    const noticia = await Noticia.update(id, req.body);
+    // Solo los admins pueden reasignar autor
+    const cambios = { ...req.body };
+    if (!esAdmin) delete cambios.autor_id;
+
+    const noticia = await Noticia.update(id, cambios);
     res.json(noticia);
   } catch (err) {
     console.error('PUT /noticias/:id:', err.message);
