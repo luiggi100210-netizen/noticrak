@@ -3,6 +3,14 @@
 export const revalidate = 60;
 
 import { API_URL, type PortadaResponse, type VideosResponse } from '../lib/api';
+import RadioPlayer from '../components/radio/RadioPlayer';
+import NoticiaHero from '../components/noticias/NoticiaHero';
+import SeccionNoticias from '../components/noticias/SeccionNoticias';
+import GrillaCategoria from '../components/noticias/GrillaCategoria';
+import ClimaWidget from '../components/widgets/ClimaWidget';
+import CambioWidget from '../components/widgets/CambioWidget';
+import TendenciasWidget from '../components/widgets/TendenciasWidget';
+import SeccionVideos from '../components/videos/SeccionVideos';
 
 interface RadioConfig {
   activo:      boolean;
@@ -15,14 +23,6 @@ interface RadioAhoraResponse {
   ok?: boolean;
   data: RadioConfig | null;
 }
-import RadioPlayer from '../components/radio/RadioPlayer';
-import NoticiaHero from '../components/noticias/NoticiaHero';
-import SeccionNoticias from '../components/noticias/SeccionNoticias';
-import GrillaCategoria from '../components/noticias/GrillaCategoria';
-import ClimaWidget from '../components/widgets/ClimaWidget';
-import CambioWidget from '../components/widgets/CambioWidget';
-import TendenciasWidget from '../components/widgets/TendenciasWidget';
-import SeccionVideos from '../components/videos/SeccionVideos';
 
 const PORTADA_VACIA: PortadaResponse = {
   cusco: [], politica: [], nacional: [], economia: [],
