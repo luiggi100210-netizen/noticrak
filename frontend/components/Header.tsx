@@ -119,32 +119,16 @@ export default function Header() {
           </nav>
 
           {/* Actions */}
-          <div className="flex items-center gap-2">
-            {/* Search inline visible en desktop (md+) */}
-            <form
-              onSubmit={handleSearch}
-              className="hidden md:flex items-center relative"
-            >
-              <MagnifyingGlassIcon className="w-4 h-4 absolute left-3 text-slate-400 pointer-events-none" />
-              <input
-                type="text"
-                value={searchQuery}
-                onChange={e => setSearchQuery(e.target.value)}
-                placeholder="Buscar noticias..."
-                className="border border-slate-200 dark:border-slate-700 rounded-full pl-9 pr-4 py-1.5 text-sm bg-slate-50 dark:bg-slate-800 w-56 lg:w-64 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:bg-white dark:focus:bg-slate-900 transition-all"
-              />
-            </form>
-
-            {/* Search icono en mobile */}
+          <div className="flex items-center gap-1">
             {searchOpen ? (
-              <form onSubmit={handleSearch} className="md:hidden flex items-center gap-1">
+              <form onSubmit={handleSearch} className="flex items-center gap-2">
                 <input
                   ref={searchRef}
                   type="text"
                   value={searchQuery}
                   onChange={e => setSearchQuery(e.target.value)}
-                  placeholder="Buscar..."
-                  className="border border-slate-300 dark:border-slate-600 rounded-lg px-3 py-1.5 text-sm bg-white dark:bg-slate-800 w-40 focus:outline-none focus:ring-2 focus:ring-primary-500"
+                  placeholder="Buscar noticias..."
+                  className="border border-slate-300 dark:border-slate-600 rounded-lg px-3 py-1.5 text-sm bg-white dark:bg-slate-800 w-48 sm:w-64 focus:outline-none focus:ring-2 focus:ring-primary-500"
                 />
                 <button type="button" onClick={() => setSearchOpen(false)} className="p-1.5">
                   <XMarkIcon className="w-5 h-5" />
@@ -153,7 +137,7 @@ export default function Header() {
             ) : (
               <button
                 onClick={() => setSearchOpen(true)}
-                className="md:hidden p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+                className="p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
                 aria-label="Buscar"
               >
                 <MagnifyingGlassIcon className="w-5 h-5" />
