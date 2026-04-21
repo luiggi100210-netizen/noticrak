@@ -18,7 +18,7 @@ const PORTADA_VACIA = {
 };
 
 // Filtra noticias cuyo id ya fue usado y marca los nuevos como usados
-function dedupe(noticias: Noticia[], usados: Set<number>): Noticia[] {
+function dedupe(noticias: Noticia[], usados: Set<string>): Noticia[] {
   const out: Noticia[] = [];
   for (const n of noticias) {
     if (!usados.has(n.id)) {
@@ -42,7 +42,7 @@ export default async function HomePage() {
   const videos = videosRes.videos ?? [];
 
   // ── Dedupe: cada noticia aparece UNA SOLA VEZ en la home ──────────
-  const usados = new Set<number>();
+  const usados = new Set<string>();
 
   // 1. Hero destacada
   if (portada.destacada) usados.add(portada.destacada.id);
