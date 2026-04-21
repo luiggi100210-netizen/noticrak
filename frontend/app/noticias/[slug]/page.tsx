@@ -103,7 +103,7 @@ export default async function NoticiaPage({ params }: PageProps) {
 
   const { noticia, relacionadas } = data;
 
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://noticrack.pe';
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://noticrack.com';
   const articleUrl = `${siteUrl}/noticias/${noticia.slug}`;
   const articleSchema = {
     '@context': 'https://schema.org',

@@ -1,7 +1,7 @@
 import type { MetadataRoute } from 'next';
 import { getNoticias, CATEGORIAS } from '../lib/api';
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://noticrack.pe';
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://noticrack.com';
 
 export const revalidate = 3600; // Regenera el sitemap cada hora
 

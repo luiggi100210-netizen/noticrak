@@ -5,7 +5,7 @@ import Header from '../components/Header';
 import BottomNav from '../components/BottomNav';
 import RedesFlotantes from '../components/ui/RedesFlotantes';
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://noticrack.pe';
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://noticrack.com';
 const SITE_NAME = 'NotiCrack';
 const SITE_DESCRIPTION = 'Portal de noticias de Cusco, Perú. Política, economía, deportes, entretenimiento y más.';
 
@@ -88,7 +88,7 @@ export default function RootLayout({
                 </div>
                 <div>
                   <h4 className="font-semibold mb-3">Contacto</h4>
-                  <p className="text-slate-400 text-sm">redaccion@noticrack.pe</p>
+                  <p className="text-slate-400 text-sm">redaccion@noticrack.com</p>
                   <p className="text-slate-400 text-sm">Cusco, Perú</p>
                 </div>
               </div>
