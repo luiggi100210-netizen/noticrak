@@ -61,9 +61,13 @@ export default function NoticiaCard({ noticia, variant = 'grid', numero }: Notic
             {noticia.resumen && (
               <p className="text-slate-300 text-sm line-clamp-2">{noticia.resumen}</p>
             )}
-            <div className="flex items-center gap-3 mt-3 text-xs text-slate-400">
-              {noticia.autor_nombre && <span>{noticia.autor_nombre}</span>}
-              <span>{tiempoRelativo}</span>
+            <div className="mt-3 text-xs space-y-0.5">
+              {noticia.autor_nombre && (
+                <p className="font-medium text-slate-200 truncate">
+                  {noticia.autor_nombre}
+                </p>
+              )}
+              <p className="text-slate-400">{tiempoRelativo}</p>
             </div>
           </div>
         </div>
@@ -100,10 +104,13 @@ export default function NoticiaCard({ noticia, variant = 'grid', numero }: Notic
             >
               {noticia.titulo}
             </h2>
-            <div className="flex items-center gap-2 text-xs text-slate-300">
-              {noticia.autor_nombre && <span>{noticia.autor_nombre}</span>}
-              {noticia.autor_nombre && <span>·</span>}
-              <span>{tiempoRelativo}</span>
+            <div className="text-xs space-y-0.5">
+              {noticia.autor_nombre && (
+                <p className="font-medium text-slate-200 truncate">
+                  {noticia.autor_nombre}
+                </p>
+              )}
+              <p className="text-slate-300">{tiempoRelativo}</p>
             </div>
           </div>
         </div>
