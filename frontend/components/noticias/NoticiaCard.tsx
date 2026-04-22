@@ -155,10 +155,13 @@ export default function NoticiaCard({ noticia, variant = 'grid', numero }: Notic
           >
             {noticia.titulo}
           </h3>
-          <div className="flex items-center gap-2 mt-1 text-xs text-slate-400">
-            {noticia.autor_nombre && <span>{noticia.autor_nombre}</span>}
-            {noticia.autor_nombre && <span>·</span>}
-            <span>{tiempoRelativo}</span>
+          <div className="mt-1 text-xs space-y-0.5">
+            {noticia.autor_nombre && (
+              <p className="font-medium text-slate-600 dark:text-slate-300 truncate">
+                {noticia.autor_nombre}
+              </p>
+            )}
+            <p className="text-slate-400 dark:text-slate-500">{tiempoRelativo}</p>
           </div>
         </div>
       </Link>
@@ -193,12 +196,17 @@ export default function NoticiaCard({ noticia, variant = 'grid', numero }: Notic
       >
         {noticia.titulo}
       </h3>
-      <div className="flex items-center gap-2 text-xs text-slate-400">
-        {noticia.autor_nombre && <span>{noticia.autor_nombre}</span>}
-        {noticia.autor_nombre && <span>·</span>}
-        <span>{tiempoRelativo}</span>
-        <span>·</span>
-        <span>{(noticia.vistas ?? 0).toLocaleString()} vistas</span>
+      <div className="text-xs text-slate-500 dark:text-slate-400 space-y-0.5">
+        {noticia.autor_nombre && (
+          <p className="font-medium text-slate-600 dark:text-slate-300 truncate">
+            {noticia.autor_nombre}
+          </p>
+        )}
+        <p className="flex items-center gap-1.5 text-slate-400 dark:text-slate-500">
+          <span>{tiempoRelativo}</span>
+          <span aria-hidden>•</span>
+          <span>{(noticia.vistas ?? 0).toLocaleString()} vistas</span>
+        </p>
       </div>
     </Link>
   );
