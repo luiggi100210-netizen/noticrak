@@ -7,6 +7,18 @@ const config: Config = {
     './app/**/*.{js,ts,jsx,tsx,mdx}',
     './lib/**/*.{js,ts,jsx,tsx,mdx}',
   ],
+  // Colores de categorías — no purgar nunca (se asignan dinámicamente desde lib/api.ts)
+  safelist: [
+    'bg-amber-500',
+    'bg-blue-600',
+    'bg-red-600',
+    'bg-green-600',
+    'bg-orange-500',
+    'bg-purple-600',
+    'bg-sky-600',
+    'bg-pink-500',
+    'bg-gray-500',
+  ],
   darkMode: 'class',
   theme: {
     extend: {
