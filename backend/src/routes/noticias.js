@@ -30,7 +30,7 @@ router.get('/admin/todas', soloAdmin, async (req, res) => {
     const { categoria, estado, limite, pagina, buscar } = req.query;
     const resultado = await Noticia.getAll({
       categoria,
-      estado: estado || 'publicado',
+      estado: estado || 'todas',
       limite: parseInt(limite) || 20,
       pagina: parseInt(pagina) || 1,
       buscar,

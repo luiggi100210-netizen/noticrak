@@ -1,4 +1,4 @@
-export const dynamic = 'force-dynamic';
+export const revalidate = 60;
 
 import { getVideosApi } from '../../lib/api';
 import VideoPlayer from '../../components/videos/VideoPlayer';

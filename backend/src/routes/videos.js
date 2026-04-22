@@ -64,8 +64,14 @@ router.put('/:id', verificarToken, async (req, res) => {
   if (isNaN(id)) return res.status(400).json({ error: 'ID inválido' });
 
   try {
+    // Verificar que el video exista y pertenezca al usuario (o sea admin)
+    const existente = await Video.getById(id);
+    if (!existente) return res.status(404).json({ error: 'Video no encontrado' });
+    if (req.usuario.rol !== 'admin' && existente.autor_id !== req.usuario.id) {
+      return res.status(403).json({ error: 'No tienes permiso para editar este video' });
+    }
+
     const video = await Video.update(id, req.body);
-    if (!video) return res.status(404).json({ error: 'Video no encontrado' });
     res.json(video);
   } catch (err) {
     console.error('PUT /videos/:id:', err.message);
@@ -79,8 +85,14 @@ router.delete('/:id', verificarToken, async (req, res) => {
   if (isNaN(id)) return res.status(400).json({ error: 'ID inválido' });
 
   try {
+    // Verificar que el video exista y pertenezca al usuario (o sea admin)
+    const existente = await Video.getById(id);
+    if (!existente) return res.status(404).json({ error: 'Video no encontrado' });
+    if (req.usuario.rol !== 'admin' && existente.autor_id !== req.usuario.id) {
+      return res.status(403).json({ error: 'No tienes permiso para eliminar este video' });
+    }
+
     const eliminado = await Video.delete(id);
-    if (!eliminado) return res.status(404).json({ error: 'Video no encontrado' });
     res.json({ mensaje: 'Video eliminado', id: eliminado.id });
   } catch (err) {
     console.error('DELETE /videos/:id:', err.message);
