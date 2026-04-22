@@ -1,5 +1,20 @@
 Options -MultiViews
+
+# SPA fallback: rutas inexistentes → index.html (para React Router)
 RewriteEngine On
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteRule ^ index.html [QSA,L]
+
+# MIME types correctos (evita "Failed to load module script")
+<IfModule mod_mime.c>
+  AddType application/javascript .js
+  AddType text/css               .css
+</IfModule>
+
+# index.html nunca se cachea (para que los cambios se vean enseguida)
+<IfModule mod_headers.c>
+  <FilesMatch "index\.html$">
+    Header set Cache-Control "no-cache, no-store, must-revalidate"
+  </FilesMatch>
+</IfModule>
